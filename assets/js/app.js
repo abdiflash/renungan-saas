@@ -1,10 +1,16 @@
+/* ======================
+   KONFIGURASI
+====================== */
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
+// 🔴 GANTI DENGAN ID GOOGLE SHEET KAMU
 const SHEET_ID = "1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY";
 const SHEET_NAME = "renungan";
 
 const SHEET_API_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+
+let renunganData = [];
 
 /* ======================
    UTIL TANGGAL LOKAL
@@ -17,10 +23,8 @@ function getLocalDateString() {
   return `${y}-${m}-${day}`;
 }
 
-let renunganData = [];
-
 /* ======================
-   LOAD DATA DARI GSHEET
+   LOAD DATA DARI SHEET
 ====================== */
 async function loadRenunganData() {
   const res = await fetch(SHEET_API_URL);
@@ -57,6 +61,7 @@ function getRenunganByDate(dateStr) {
 ====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
+
   document.getElementById("renunganDate").textContent = dateStr;
 
   if (!r) {
@@ -77,9 +82,88 @@ function renderRenungan(dateStr) {
 }
 
 /* ======================
+   KALENDER
+====================== */
+let currentDate = new Date();
+
+function renderCalendar() {
+  const grid = document.getElementById("calendarGrid");
+  const label = document.getElementById("monthLabel");
+  grid.innerHTML = "";
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const monthNames = [
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  label.textContent = `${monthNames[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < firstDay; i++) {
+    grid.appendChild(document.createElement("div"));
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+    cell.textContent = d;
+
+    const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
+    const isFuture = new Date(year,month,d) > today;
+    const isToday =
+      d === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear();
+
+    if (isFuture) {
+      cell.classList.add("locked");
+      cell.textContent = "🔒";
+    } else {
+      if (isToday) cell.classList.add("today");
+
+      cell.onclick = () => {
+        renderRenungan(dateStr);
+        document.getElementById("calendar").classList.add("hidden");
+        document.getElementById("renungan").classList.remove("hidden");
+      };
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+/* ======================
    INIT
 ====================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRenunganData();
   renderRenungan(getLocalDateString());
+  renderCalendar();
+
+  document.getElementById("openCalendar").onclick = () => {
+    document.getElementById("renungan").classList.add("hidden");
+    document.getElementById("calendar").classList.remove("hidden");
+  };
+
+  document.getElementById("closeCalendar").onclick = () => {
+    document.getElementById("calendar").classList.add("hidden");
+    document.getElementById("renungan").classList.remove("hidden");
+  };
+
+  document.getElementById("prevMonth").onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  };
+
+  document.getElementById("nextMonth").onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  };
 });
