@@ -133,6 +133,9 @@ function toggleCalendar(show) {
 }
 
 function getRenunganByDate(dateStr) {
+  console.log("Cari tanggal:", dateStr);
+  console.log("Data:", renunganData);
+
   return renunganData.find(r =>
     r.date === dateStr &&
     r.status === "published" &&
@@ -169,4 +172,3 @@ document.getElementById("nextMonth").onclick = () => {
 
 // ================= INIT =================
 renderRenungan(today.toISOString().split("T")[0]);
-
