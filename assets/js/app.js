@@ -31,27 +31,28 @@ function getRenunganByDate(dateStr) {
 }
 
 function renderRenungan(dateStr) {
-  const container = document.getElementById("renungan-content");
   const r = getRenunganByDate(dateStr);
 
+  document.getElementById("renunganDate").textContent = dateStr;
+
   if (!r) {
-    container.innerHTML = `
-      <h2>Renungan tidak tersedia</h2>
-      <p>Renungan belum dipublikasikan atau bukan bagian dari tahun ajaran aktif.</p>
-    `;
+    document.getElementById("judul").textContent = "Renungan tidak tersedia";
+    document.getElementById("ayat").textContent = "";
+    document.getElementById("ayatText").textContent =
+      "Renungan belum dipublikasikan atau bukan bagian dari tahun ajaran aktif.";
+    document.getElementById("isi").textContent = "";
+    document.getElementById("refleksi").textContent = "";
     return;
   }
 
-  container.innerHTML = `
-    <h2>${r.judul}</h2>
-    <p><strong>${r.ayat}</strong></p>
-    <p>${r.ayat_text}</p>
-    <p>${r.isi}</p>
-    <p><em>${r.refleksi}</em></p>
-  `;
+  document.getElementById("judul").textContent = r.judul;
+  document.getElementById("ayat").textContent = r.ayat;
+  document.getElementById("ayatText").textContent = r.ayat_text;
+  document.getElementById("isi").textContent = r.isi;
+  document.getElementById("refleksi").textContent = r.refleksi;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const today = getLocalDateString();
-  renderRenungan(today);
+  renderRenungan(getLocalDateString());
 });
+
