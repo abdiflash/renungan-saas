@@ -1,3 +1,6 @@
+/* ======================
+   GLOBAL
+====================== */
 body {
   font-family: system-ui, sans-serif;
   margin: 0;
@@ -5,6 +8,13 @@ body {
   color: #222;
 }
 
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+/* ======================
+   HEADER & FOOTER
+====================== */
 .app-header,
 .app-footer {
   background: #2f6f4e;
@@ -13,16 +23,18 @@ body {
   text-align: center;
 }
 
+/* ======================
+   LAYOUT
+====================== */
 .container {
   padding: 1rem;
   max-width: 720px;
   margin: auto;
 }
 
-h1, h2, h3 {
-  margin-top: 0;
-}
-
+/* ======================
+   RENUNGAN
+====================== */
 blockquote {
   background: #eef3ee;
   padding: 0.75rem;
@@ -31,6 +43,12 @@ blockquote {
 
 .refleksi {
   margin-top: 1rem;
+}
+
+/* Pastikan renungan selalu di atas */
+#renungan {
+  position: relative;
+  z-index: 20;
 }
 
 /* ======================
@@ -44,18 +62,33 @@ blockquote {
   color: white;
   cursor: pointer;
   border-radius: 4px;
+
+  /* HARD FIX */
   position: relative;
-  z-index: 10;
+  z-index: 30;
+  pointer-events: auto !important;
 }
 
 /* ======================
    KALENDER
 ====================== */
+#calendar {
+  position: relative;
+  z-index: 10;
+}
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-header button {
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .calendar-grid {
@@ -64,6 +97,9 @@ blockquote {
   gap: 8px;
 }
 
+/* ======================
+   KALENDER DAY
+====================== */
 .calendar-day {
   padding: 10px;
   text-align: center;
@@ -73,16 +109,16 @@ blockquote {
   user-select: none;
 }
 
-/* TANGGAL TERKUNCI */
-.calendar-day.locked {
-  background: #ddd;
-  cursor: not-allowed;
-}
-
 /* SLOT KOSONG */
 .calendar-day.empty {
   background: transparent;
   cursor: default;
+}
+
+/* TERKUNCI (MASA DEPAN) */
+.calendar-day.locked {
+  background: #ddd;
+  cursor: not-allowed;
 }
 
 /* HARI INI (SOFT) */
@@ -99,8 +135,14 @@ blockquote {
 }
 
 /* ======================
-   VISIBILITY
+   VISIBILITY / HARD FIX
 ====================== */
 .hidden {
   display: none !important;
+}
+
+/* Kalender benar-benar nonaktif saat hidden */
+#calendar.hidden {
+  display: none !important;
+  pointer-events: none !important;
 }
