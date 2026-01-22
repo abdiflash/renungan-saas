@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renungan Harian</title>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=final-fix">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
@@ -20,21 +20,18 @@
   <!-- RENUNGAN -->
   <section id="renungan">
     <header>
-      <h2 id="renunganTitle">Renungan Hari Ini</h2>
+      <h2>Renungan Hari Ini</h2>
       <time id="renunganDate"></time>
     </header>
 
     <article>
       <h3 id="judul"></h3>
 
-      <p class="ayat"><strong id="ayat"></strong></p>
+      <p><strong id="ayat"></strong></p>
       <blockquote id="ayatText"></blockquote>
 
       <p id="isi"></p>
-
       <p class="refleksi"><em id="refleksi"></em></p>
-
-      <button id="audioBtn" class="hidden">▶️ Dengarkan Audio</button>
     </article>
 
     <button id="openCalendar" class="calendar-btn">
@@ -50,7 +47,7 @@
       <button id="nextMonth">▶</button>
     </div>
 
-    <div class="calendar-grid" id="calendarGrid"></div>
+    <div id="calendarGrid" class="calendar-grid"></div>
 
     <button id="closeCalendar" class="calendar-btn">
       Tutup Kalender
@@ -63,8 +60,6 @@
   © 2026 Renungan SaaS
 </footer>
 
-<!-- 🔴 INI WAJIB ADA -->
-<script src="assets/js/app.js?v=gsheet-final" defer></script>
-
+<script src="assets/js/app.js"></script>
 </body>
 </html>
