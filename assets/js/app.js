@@ -26,12 +26,12 @@ const renunganData = [
     tahun_ajaran: "2025/2026"
   },
   {
-    date: "2026-01-22",
-    judul: "Kasih Tuhan",
-    ayat: "Yohanes 3:16",
-    ayat_text: "Karena begitu besar kasih Allah...",
-    isi: "Kasih Tuhan nyata setiap hari.",
-    refleksi: "Bagaimana kamu membagikan kasih hari ini?",
+    date: new Date().toISOString().split("T")[0],
+    judul: "TES RENUNGAN HARI INI",
+    ayat: "Mazmur 23:1",
+    ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
+    isi: "Jika ini muncul, berarti filter SUKSES.",
+    refleksi: "Apakah kamu percaya Tuhan menyertaimu?",
     audio_url: "",
     status: "published",
     tahun_ajaran: "2025/2026"
