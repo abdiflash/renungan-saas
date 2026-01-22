@@ -65,6 +65,85 @@ function renderRenungan(dateStr) {
 }
 
 /* ======================
+   KALENDER STATE
+====================== */
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+/* ======================
+   RENDER KALENDER
+====================== */
+function renderCalendar(month, year) {
+  const grid = document.getElementById("calendarGrid");
+  const label = document.getElementById("monthLabel");
+  if (!grid || !label) return;
+
+  grid.innerHTML = "";
+
+  const monthNames = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  label.textContent = `${monthNames[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayStr = getLocalDateString();
+
+  // padding sebelum tanggal 1
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("div");
+    empty.className = "calendar-day empty";
+    grid.appendChild(empty);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+    cell.textContent = day;
+
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    if (dateStr > todayStr) {
+      cell.classList.add("locked");
+      cell.textContent = "🔒";
+    } else {
+      cell.addEventListener("click", () => {
+        renderRenungan(dateStr);
+        document.getElementById("calendar").classList.add("hidden");
+        document.getElementById("renungan").classList.remove("hidden");
+      });
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+/* ======================
+   NAVIGASI BULAN
+====================== */
+function setupCalendarNavigation() {
+  document.getElementById("prevMonth")?.addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderCalendar(currentMonth, currentYear);
+  });
+
+  document.getElementById("nextMonth")?.addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar(currentMonth, currentYear);
+  });
+}
+
+/* ======================
    TOGGLE KALENDER
 ====================== */
 function setupCalendarToggle() {
@@ -92,4 +171,6 @@ function setupCalendarToggle() {
 document.addEventListener("DOMContentLoaded", () => {
   renderRenungan(getLocalDateString());
   setupCalendarToggle();
+  setupCalendarNavigation();
+  renderCalendar(currentMonth, currentYear);
 });
