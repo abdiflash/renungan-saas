@@ -1,3 +1,6 @@
+// ================= CONFIG ADMIN =================
+const ACTIVE_TAHUN_AJARAN = "2025/2026";
+
 function getLocalDateString() {
   const d = new Date();
   const year = d.getFullYear();
@@ -5,10 +8,6 @@ function getLocalDateString() {
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
-
-// ================= CONFIG ADMIN =================
-const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
 // ================= DATA DUMMY =================
 const renunganData = [
