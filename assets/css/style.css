@@ -33,6 +33,9 @@ blockquote {
   margin-top: 1rem;
 }
 
+/* ======================
+   BUTTON
+====================== */
 .calendar-btn {
   margin-top: 1.5rem;
   padding: 0.6rem 1rem;
@@ -41,8 +44,13 @@ blockquote {
   color: white;
   cursor: pointer;
   border-radius: 4px;
+  position: relative;
+  z-index: 10;
 }
 
+/* ======================
+   KALENDER
+====================== */
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -62,55 +70,37 @@ blockquote {
   border-radius: 6px;
   background: #f0f0f0;
   cursor: pointer;
+  user-select: none;
 }
 
+/* TANGGAL TERKUNCI */
 .calendar-day.locked {
   background: #ddd;
   cursor: not-allowed;
 }
 
+/* SLOT KOSONG */
 .calendar-day.empty {
   background: transparent;
+  cursor: default;
 }
 
+/* HARI INI (SOFT) */
 .calendar-day.today {
-  background: #e0f2fe;        /* biru muda soft */
-  color: #075985;             /* teks biru lembut */
+  background: #e0f2fe;
+  color: #075985;
   font-weight: 600;
   border: 1.5px solid #bae6fd;
 }
 
-.calendar-day.today:hover {
-  background: #bae6fd;
-}
-
-.calendar-day:not(.locked):hover {
+/* HOVER */
+.calendar-day:not(.locked):not(.empty):hover {
   background: #dbeafe;
 }
 
-.calendar-grid button {
-  padding: 0.6rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.calendar-grid .past {
-  background: #e3efe7;
-}
-
-.calendar-grid .today {
-  background: #2f6f4e;
-  color: white;
-  font-weight: bold;
-}
-
-.calendar-grid .locked {
-  background: #ddd;
-  cursor: not-allowed;
-}
-
+/* ======================
+   VISIBILITY
+====================== */
 .hidden {
-  display: none;
+  display: none !important;
 }
-
