@@ -73,6 +73,28 @@ blockquote {
   background: transparent;
 }
 
+.calendar-day.today {
+  background: #2563eb;        /* biru fokus */
+  color: #fff;
+  font-weight: bold;
+  border: 2px solid #1e40af;
+  position: relative;
+}
+
+.calendar-day.today::after {
+  content: "Hari ini";
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: #2563eb;
+}
+
+.calendar-day:not(.locked):hover {
+  background: #dbeafe;
+}
+
 .calendar-grid button {
   padding: 0.6rem;
   border: none;
