@@ -184,4 +184,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadRenunganData();
   renderRenungan(getLocalDateString());
   setupCalendarToggle();
+  setupCalendarNavigation();
+  renderCalendar(currentMonth, currentYear);
 });
