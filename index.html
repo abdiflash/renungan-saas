@@ -1,13 +1,68 @@
-<!-- redeploy -->
-
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renungan Harian</title>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="assets/js/app.js" defer></script>
 </head>
+
 <body>
-  <h1>Renungan Harian – SaaS Sekolah</h1>
-  <p>GitHub Pages aktif.</p>
+
+<header class="app-header">
+  <h1>Renungan Harian</h1>
+  <p>Tahun Ajaran: <strong>2025 / 2026</strong></p>
+</header>
+
+<main class="container">
+
+  <!-- RENUNGAN -->
+  <section id="renungan">
+    <header>
+      <h2 id="renunganTitle">Renungan Hari Ini</h2>
+      <time id="renunganDate"></time>
+    </header>
+
+    <article>
+      <h3 id="judul"></h3>
+
+      <p class="ayat"><strong id="ayat"></strong></p>
+      <blockquote id="ayatText"></blockquote>
+
+      <p id="isi"></p>
+
+      <p class="refleksi"><em id="refleksi"></em></p>
+
+      <button id="audioBtn" class="hidden">▶️ Dengarkan Audio</button>
+    </article>
+
+    <button id="openCalendar" class="calendar-btn">
+      📅 Lihat Kalender Renungan
+    </button>
+  </section>
+
+  <!-- KALENDER -->
+  <section id="calendar" class="hidden">
+    <div class="calendar-header">
+      <button id="prevMonth">◀</button>
+      <h3 id="monthLabel"></h3>
+      <button id="nextMonth">▶</button>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <button id="closeCalendar" class="calendar-btn">
+      Tutup Kalender
+    </button>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  © 2026 Renungan SaaS
+</footer>
+
 </body>
 </html>
