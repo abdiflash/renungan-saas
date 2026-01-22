@@ -1,1 +1,84 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f9faf7;
+  color: #222;
+}
+
+.app-header,
+.app-footer {
+  background: #2f6f4e;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.container {
+  padding: 1rem;
+  max-width: 720px;
+  margin: auto;
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+blockquote {
+  background: #eef3ee;
+  padding: 0.75rem;
+  border-left: 4px solid #2f6f4e;
+}
+
+.refleksi {
+  margin-top: 1rem;
+}
+
+.calendar-btn {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: #2f6f4e;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+.calendar-grid button {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-grid .past {
+  background: #e3efe7;
+}
+
+.calendar-grid .today {
+  background: #2f6f4e;
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-grid .locked {
+  background: #ddd;
+  cursor: not-allowed;
+}
+
+.hidden {
+  display: none;
+}
 
