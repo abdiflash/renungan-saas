@@ -1,5 +1,5 @@
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxF_8x8WFdrMLOmedI1yRwsgvSnD7-FEsCvwMHX6cTGU0T_Sp_qRwZ4ySw0x1dGvBt6/exec";
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwzdmfZoCl1gBHCnnzJWUgGxWiOd787ccQLokcABXwBZYsKgfBK5trejwri3pearrRY/exec";
 
 /* ======================
    UTIL: TANGGAL LOKAL
