@@ -61,6 +61,7 @@ function getRenunganByDate(dateStr) {
 ====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
+  renderAudio(r.audio_url);
 
   document.getElementById("renunganDate").textContent = dateStr;
 
@@ -137,6 +138,25 @@ function renderCalendar() {
 
     grid.appendChild(cell);
   }
+}
+function renderAudio(audioUrl) {
+  const btn = document.getElementById("audioBtn");
+  const player = document.getElementById("audioPlayer");
+
+  if (!audioUrl) {
+    btn.classList.add("hidden");
+    player.classList.add("hidden");
+    player.src = "";
+    return;
+  }
+
+  btn.classList.remove("hidden");
+
+  btn.onclick = () => {
+    player.src = audioUrl;
+    player.classList.remove("hidden");
+    player.play();
+  };
 }
 
 /* ======================
