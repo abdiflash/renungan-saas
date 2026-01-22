@@ -4,34 +4,12 @@ const ACTIVE_TAHUN_AJARAN = "2025/2026";
 // ================= DATA DUMMY =================
 const renunganData = [
   {
-    date: "2026-01-20",
-    judul: "Tuhan Menyertai",
-    ayat: "Mazmur 23:1",
-    ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
-    isi: "Tuhan selalu menyertai kita.",
-    refleksi: "Apakah kamu sudah berserah hari ini?",
-    audio_url: "",
-    status: "published",
-    tahun_ajaran: "2025/2026"
-  },
-  {
-    date: "2026-01-21",
-    judul: "Draft Jangan Tampil",
-    ayat: "Mazmur 1:1",
-    ayat_text: "Berbahagialah orang yang tidak berjalan...",
-    isi: "Ini masih draft.",
-    refleksi: "",
-    audio_url: "",
-    status: "draft",
-    tahun_ajaran: "2025/2026"
-  },
-  {
     date: new Date().toISOString().split("T")[0],
     judul: "TES RENUNGAN HARI INI",
     ayat: "Mazmur 23:1",
     ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
-    isi: "Jika ini muncul, berarti filter SUKSES.",
-    refleksi: "Apakah kamu percaya Tuhan menyertaimu?",
+    isi: "Jika ini muncul, berarti DATA & FILTER SUDAH BENAR.",
+    refleksi: "Apakah kamu percaya Tuhan menyertaimu hari ini?",
     audio_url: "",
     status: "published",
     tahun_ajaran: "2025/2026"
