@@ -1,5 +1,8 @@
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
+/* ======================
+   UTIL: TANGGAL LOKAL
+====================== */
 function getLocalDateString() {
   const d = new Date();
   const y = d.getFullYear();
@@ -8,6 +11,9 @@ function getLocalDateString() {
   return `${y}-${m}-${day}`;
 }
 
+/* ======================
+   DATA (DUMMY / NANTI DARI GSHEET)
+====================== */
 const renunganData = [
   {
     date: getLocalDateString(),
@@ -22,6 +28,9 @@ const renunganData = [
   }
 ];
 
+/* ======================
+   DATA ACCESS
+====================== */
 function getRenunganByDate(dateStr) {
   return renunganData.find(r =>
     r.date === dateStr &&
@@ -30,6 +39,9 @@ function getRenunganByDate(dateStr) {
   );
 }
 
+/* ======================
+   RENDER RENUNGAN
+====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
 
@@ -52,7 +64,32 @@ function renderRenungan(dateStr) {
   document.getElementById("refleksi").textContent = r.refleksi;
 }
 
+/* ======================
+   TOGGLE KALENDER
+====================== */
+function setupCalendarToggle() {
+  const openBtn = document.getElementById("openCalendar");
+  const closeBtn = document.getElementById("closeCalendar");
+  const calendarSection = document.getElementById("calendar");
+  const renunganSection = document.getElementById("renungan");
+
+  if (!openBtn || !closeBtn) return;
+
+  openBtn.addEventListener("click", () => {
+    renunganSection.classList.add("hidden");
+    calendarSection.classList.remove("hidden");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    calendarSection.classList.add("hidden");
+    renunganSection.classList.remove("hidden");
+  });
+}
+
+/* ======================
+   INIT
+====================== */
 document.addEventListener("DOMContentLoaded", () => {
   renderRenungan(getLocalDateString());
+  setupCalendarToggle();
 });
-
