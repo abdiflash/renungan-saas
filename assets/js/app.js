@@ -1,3 +1,6 @@
+// ================= CONFIG ADMIN =================
+const ACTIVE_TAHUN_AJARAN = "2025/2026";
+
 // ================= DATA DUMMY =================
 const renunganData = [
   {
