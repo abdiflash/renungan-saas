@@ -106,15 +106,22 @@ function renderCalendar(month, year) {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
     if (dateStr > todayStr) {
-      cell.classList.add("locked");
-      cell.textContent = "🔒";
-    } else {
-      cell.addEventListener("click", () => {
-        renderRenungan(dateStr);
-        document.getElementById("calendar").classList.add("hidden");
-        document.getElementById("renungan").classList.remove("hidden");
-      });
-    }
+  cell.classList.add("locked");
+  cell.textContent = "🔒";
+} else {
+  // tandai hari ini
+  if (dateStr === todayStr) {
+    cell.classList.add("today");
+    cell.title = "Renungan Hari Ini";
+  }
+
+  cell.addEventListener("click", () => {
+    renderRenungan(dateStr);
+    document.getElementById("calendar").classList.add("hidden");
+    document.getElementById("renungan").classList.remove("hidden");
+  });
+}
+
 
     grid.appendChild(cell);
   }
