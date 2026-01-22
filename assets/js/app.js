@@ -38,7 +38,6 @@ function getRenunganByDate(dateStr) {
 ====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
-
   document.getElementById("renunganDate").textContent = dateStr;
 
   if (!r) {
@@ -83,13 +82,12 @@ function renderCalendar(month, year) {
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+
   const today = new Date();
-const todayDay = today.getDate();
-const todayMonth = today.getMonth();
-const todayYear = today.getFullYear();
+  const todayDay = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
 
-
-  // padding sebelum tanggal 1
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement("div");
     empty.className = "calendar-day empty";
@@ -104,29 +102,28 @@ const todayYear = today.getFullYear();
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
     const isToday =
-  day === todayDay &&
-  month === todayMonth &&
-  year === todayYear;
+      day === todayDay &&
+      month === todayMonth &&
+      year === todayYear;
 
-const isFuture =
-  new Date(year, month, day) > new Date(todayYear, todayMonth, todayDay);
+    const isFuture =
+      new Date(year, month, day) >
+      new Date(todayYear, todayMonth, todayDay);
 
-if (isFuture) {
-  cell.classList.add("locked");
-  cell.textContent = "🔒";
-} else {
-  if (isToday) {
-    cell.classList.add("today");
-    cell.title = "Renungan Hari Ini";
-  }
+    if (isFuture) {
+      cell.classList.add("locked");
+      cell.textContent = "🔒";
+    } else {
+      if (isToday) {
+        cell.classList.add("today");
+      }
 
-  cell.addEventListener("click", () => {
-    renderRenungan(dateStr);
-    document.getElementById("calendar").classList.add("hidden");
-    document.getElementById("renungan").classList.remove("hidden");
-  });
-}
-
+      cell.addEventListener("click", () => {
+        renderRenungan(dateStr);
+        document.getElementById("calendar").classList.add("hidden");
+        document.getElementById("renungan").classList.remove("hidden");
+      });
+    }
 
     grid.appendChild(cell);
   }
@@ -161,29 +158,27 @@ function setupCalendarNavigation() {
 function setupCalendarToggle() {
   const openBtn = document.getElementById("openCalendar");
   const closeBtn = document.getElementById("closeCalendar");
-  const calendarSection = document.getElementById("calendar");
-  const renunganSection = document.getElementById("renungan");
+  const calendar = document.getElementById("calendar");
+  const renungan = document.getElementById("renungan");
 
-  if (!openBtn || !closeBtn) return;
+  openBtn.onclick = () => {
+    renungan.classList.add("hidden");
+    calendar.classList.remove("hidden");
+  };
 
-  openBtn.addEventListener("click", () => {
-    renunganSection.classList.add("hidden");
-    calendarSection.classList.remove("hidden");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    calendarSection.classList.add("hidden");
-    renunganSection.classList.remove("hidden");
-  });
+  closeBtn.onclick = () => {
+    calendar.classList.add("hidden");
+    renungan.classList.remove("hidden");
+  };
 }
 
 /* ======================
-   INIT
+   INIT (PALING PENTING)
 ====================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRenunganData();
   renderRenungan(getLocalDateString());
-  setupCalendarToggle();
-  setupCalendarNavigation();
   renderCalendar(currentMonth, currentYear);
+  setupCalendarNavigation();
+  setupCalendarToggle();
 });
