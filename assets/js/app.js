@@ -8,20 +8,36 @@ const renunganData = [
     judul: "Tuhan Menyertai",
     ayat: "Mazmur 23:1",
     ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
-    isi: "Tuhan selalu menyertai kita dalam setiap langkah hidup.",
-    refleksi: "Apakah hari ini kamu sudah berserah pada Tuhan?",
-    audio_url: ""
+    isi: "Tuhan selalu menyertai kita.",
+    refleksi: "Apakah kamu sudah berserah hari ini?",
+    audio_url: "",
+    status: "published",
+    tahun_ajaran: "2025/2026"
+  },
+  {
+    date: "2026-01-21",
+    judul: "Draft Jangan Tampil",
+    ayat: "Mazmur 1:1",
+    ayat_text: "Berbahagialah orang yang tidak berjalan...",
+    isi: "Ini masih draft.",
+    refleksi: "",
+    audio_url: "",
+    status: "draft",
+    tahun_ajaran: "2025/2026"
   },
   {
     date: "2026-01-22",
     judul: "Kasih Tuhan",
     ayat: "Yohanes 3:16",
-    ayat_text: "Karena begitu besar kasih Allah akan dunia ini...",
-    isi: "Kasih Tuhan nyata dalam hidup kita setiap hari.",
-    refleksi: "Bagaimana kamu menunjukkan kasih Tuhan hari ini?",
-    audio_url: ""
+    ayat_text: "Karena begitu besar kasih Allah...",
+    isi: "Kasih Tuhan nyata setiap hari.",
+    refleksi: "Bagaimana kamu membagikan kasih hari ini?",
+    audio_url: "",
+    status: "published",
+    tahun_ajaran: "2025/2026"
   }
 ];
+
 
 // ================= UTIL =================
 const today = new Date();
@@ -32,9 +48,17 @@ let currentYear = today.getFullYear();
 
 // ================= RENDER RENUNGAN =================
 function renderRenungan(dateStr) {
-  const item = renunganData.find(r => r.date === dateStr);
+  const item = getRenunganByDate(dateStr);
 
-  if (!item) return;
+  if (!item) {
+    document.getElementById("judul").innerText = "Renungan tidak tersedia";
+    document.getElementById("isi").innerText =
+      "Renungan belum dipublikasikan atau bukan bagian dari tahun ajaran aktif.";
+    document.getElementById("ayat").innerText = "";
+    document.getElementById("ayatText").innerText = "";
+    document.getElementById("refleksi").innerText = "";
+    return;
+  }
 
   document.getElementById("renunganDate").innerText =
     new Date(dateStr).toLocaleDateString("id-ID", {
@@ -50,6 +74,7 @@ function renderRenungan(dateStr) {
   document.getElementById("isi").innerText = item.isi;
   document.getElementById("refleksi").innerText = item.refleksi;
 }
+
 
 // ================= KALENDER =================
 function renderCalendar() {
@@ -89,9 +114,13 @@ function renderCalendar() {
         : "past";
 
       btn.onclick = () => {
-        renderRenungan(dateStr);
-        toggleCalendar(false);
+        const available = getRenunganByDate(dateStr);
+        if (available) {
+          renderRenungan(dateStr);
+          toggleCalendar(false);
+        }
       };
+
     }
 
     grid.appendChild(btn);
@@ -101,6 +130,14 @@ function renderCalendar() {
 // ================= UI =================
 function toggleCalendar(show) {
   document.getElementById("calendar").classList.toggle("hidden", !show);
+}
+
+function getRenunganByDate(dateStr) {
+  return renunganData.find(r =>
+    r.date === dateStr &&
+    r.status === "published" &&
+    r.tahun_ajaran === ACTIVE_TAHUN_AJARAN
+  );
 }
 
 document.getElementById("openCalendar").onclick = () => {
