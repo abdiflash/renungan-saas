@@ -1,15 +1,24 @@
+function getLocalDateString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+
 // ================= CONFIG ADMIN =================
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
 // ================= DATA DUMMY =================
 const renunganData = [
   {
-    date: new Date().toISOString().split("T")[0],
+    date: getLocalDateString(),
     judul: "Renungan Hari Ini",
     ayat: "Mazmur 118:24",
     ayat_text: "Inilah hari yang dijadikan TUHAN...",
-    isi: "Hari ini adalah anugerah Tuhan.",
-    refleksi: "Bagaimana kamu akan menjalani hari ini bersama Tuhan?",
+    isi: "Jika ini muncul, berarti masalah SELESAI.",
+    refleksi: "Apa responmu terhadap anugerah hari ini?",
     audio_url: "",
     status: "published",
     tahun_ajaran: "2025/2026"
