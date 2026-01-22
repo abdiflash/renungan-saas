@@ -1,17 +1,15 @@
-document.body.innerHTML = "<h1>APP.JS DIJALANKAN</h1>";
-
 // ================= CONFIG ADMIN =================
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
 // ================= DATA DUMMY =================
 const renunganData = [
   {
-    date: new Date().toISOString().split("T")[0],
-    judul: "TES RENUNGAN HARI INI",
-    ayat: "Mazmur 23:1",
-    ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
-    isi: "Jika ini muncul, berarti DATA & FILTER SUDAH BENAR.",
-    refleksi: "Apakah kamu percaya Tuhan menyertaimu hari ini?",
+    date: "2026-01-22",
+    judul: "Kasih Tuhan Setiap Hari",
+    ayat: "Ratapan 3:22-23",
+    ayat_text: "Tak berkesudahan kasih setia TUHAN...",
+    isi: "Kasih Tuhan selalu baru setiap pagi.",
+    refleksi: "Apa yang kamu syukuri hari ini?",
     audio_url: "",
     status: "published",
     tahun_ajaran: "2025/2026"
