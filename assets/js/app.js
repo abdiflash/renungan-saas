@@ -1,3 +1,5 @@
+document.body.innerHTML = "<h1>APP.JS DIJALANKAN</h1>";
+
 // ================= CONFIG ADMIN =================
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
 
