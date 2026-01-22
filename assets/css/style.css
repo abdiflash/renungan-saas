@@ -74,21 +74,14 @@ blockquote {
 }
 
 .calendar-day.today {
-  background: #2563eb;        /* biru fokus */
-  color: #fff;
-  font-weight: bold;
-  border: 2px solid #1e40af;
-  position: relative;
+  background: #e0f2fe;        /* biru muda soft */
+  color: #075985;             /* teks biru lembut */
+  font-weight: 600;
+  border: 1.5px solid #bae6fd;
 }
 
-.calendar-day.today::after {
-  content: "Hari ini";
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.6rem;
-  color: #2563eb;
+.calendar-day.today:hover {
+  background: #bae6fd;
 }
 
 .calendar-day:not(.locked):hover {
