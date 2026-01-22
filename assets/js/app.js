@@ -1,5 +1,10 @@
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwzdmfZoCl1gBHCnnzJWUgGxWiOd787ccQLokcABXwBZYsKgfBK5trejwri3pearrRY/exec";
+const SHEET_ID = "1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY";
+const SHEET_NAME = "renungan";
+
+const SHEET_API_URL =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+
 
 /* ======================
    UTIL: TANGGAL LOKAL
@@ -19,8 +24,22 @@ let renunganData = [];
 ====================== */
 async function loadRenunganData() {
   const res = await fetch(SHEET_API_URL);
-  renunganData = await res.json();
+  const text = await res.text();
+
+  const json = JSON.parse(
+    text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
+  );
+
+  const headers = json.table.cols.map(c => c.label);
+  renunganData = json.table.rows.map(r => {
+    const obj = {};
+    r.c.forEach((cell, i) => {
+      obj[headers[i]] = cell ? cell.v : "";
+    });
+    return obj;
+  });
 }
+
 
 /* ======================
    DATA ACCESS
