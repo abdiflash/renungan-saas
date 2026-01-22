@@ -4,12 +4,12 @@ const ACTIVE_TAHUN_AJARAN = "2025/2026";
 // ================= DATA DUMMY =================
 const renunganData = [
   {
-    date: "2026-01-22",
-    judul: "Kasih Tuhan Setiap Hari",
-    ayat: "Ratapan 3:22-23",
-    ayat_text: "Tak berkesudahan kasih setia TUHAN...",
-    isi: "Kasih Tuhan selalu baru setiap pagi.",
-    refleksi: "Apa yang kamu syukuri hari ini?",
+    date: new Date().toISOString().split("T")[0],
+    judul: "Renungan Hari Ini",
+    ayat: "Mazmur 118:24",
+    ayat_text: "Inilah hari yang dijadikan TUHAN...",
+    isi: "Hari ini adalah anugerah Tuhan.",
+    refleksi: "Bagaimana kamu akan menjalani hari ini bersama Tuhan?",
     audio_url: "",
     status: "published",
     tahun_ajaran: "2025/2026"
