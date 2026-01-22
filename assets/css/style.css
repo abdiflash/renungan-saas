@@ -53,7 +53,24 @@ blockquote {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.4rem;
+  gap: 8px;
+}
+
+.calendar-day {
+  padding: 10px;
+  text-align: center;
+  border-radius: 6px;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+
+.calendar-day.locked {
+  background: #ddd;
+  cursor: not-allowed;
+}
+
+.calendar-day.empty {
+  background: transparent;
 }
 
 .calendar-grid button {
