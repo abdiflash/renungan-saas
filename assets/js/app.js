@@ -1,1 +1,132 @@
+// ================= DATA DUMMY =================
+const renunganData = [
+  {
+    date: "2026-01-20",
+    judul: "Tuhan Menyertai",
+    ayat: "Mazmur 23:1",
+    ayat_text: "Tuhan adalah gembalaku, takkan kekurangan aku.",
+    isi: "Tuhan selalu menyertai kita dalam setiap langkah hidup.",
+    refleksi: "Apakah hari ini kamu sudah berserah pada Tuhan?",
+    audio_url: ""
+  },
+  {
+    date: "2026-01-22",
+    judul: "Kasih Tuhan",
+    ayat: "Yohanes 3:16",
+    ayat_text: "Karena begitu besar kasih Allah akan dunia ini...",
+    isi: "Kasih Tuhan nyata dalam hidup kita setiap hari.",
+    refleksi: "Bagaimana kamu menunjukkan kasih Tuhan hari ini?",
+    audio_url: ""
+  }
+];
+
+// ================= UTIL =================
+const today = new Date();
+today.setHours(0,0,0,0);
+
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+
+// ================= RENDER RENUNGAN =================
+function renderRenungan(dateStr) {
+  const item = renunganData.find(r => r.date === dateStr);
+
+  if (!item) return;
+
+  document.getElementById("renunganDate").innerText =
+    new Date(dateStr).toLocaleDateString("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+  document.getElementById("judul").innerText = item.judul;
+  document.getElementById("ayat").innerText = item.ayat;
+  document.getElementById("ayatText").innerText = item.ayat_text;
+  document.getElementById("isi").innerText = item.isi;
+  document.getElementById("refleksi").innerText = item.refleksi;
+}
+
+// ================= KALENDER =================
+function renderCalendar() {
+  const grid = document.getElementById("calendarGrid");
+  grid.innerHTML = "";
+
+  const label = document.getElementById("monthLabel");
+  const monthDate = new Date(currentYear, currentMonth);
+  label.innerText = monthDate.toLocaleDateString("id-ID", {
+    month: "long",
+    year: "numeric"
+  });
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+    grid.appendChild(document.createElement("div"));
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(currentYear, currentMonth, day);
+    date.setHours(0,0,0,0);
+
+    const btn = document.createElement("button");
+    btn.innerText = day;
+
+    const dateStr = date.toISOString().split("T")[0];
+
+    if (date > today) {
+      btn.innerText = "🔒" + day;
+      btn.className = "locked";
+      btn.disabled = true;
+    } else {
+      btn.className = date.getTime() === today.getTime()
+        ? "today"
+        : "past";
+
+      btn.onclick = () => {
+        renderRenungan(dateStr);
+        toggleCalendar(false);
+      };
+    }
+
+    grid.appendChild(btn);
+  }
+}
+
+// ================= UI =================
+function toggleCalendar(show) {
+  document.getElementById("calendar").classList.toggle("hidden", !show);
+}
+
+document.getElementById("openCalendar").onclick = () => {
+  toggleCalendar(true);
+  renderCalendar();
+};
+
+document.getElementById("closeCalendar").onclick = () => {
+  toggleCalendar(false);
+};
+
+document.getElementById("prevMonth").onclick = () => {
+  currentMonth--;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+  renderCalendar();
+};
+
+document.getElementById("nextMonth").onclick = () => {
+  currentMonth++;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+  renderCalendar();
+};
+
+// ================= INIT =================
+renderRenungan(today.toISOString().split("T")[0]);
 
