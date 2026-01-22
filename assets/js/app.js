@@ -1,4 +1,5 @@
 const ACTIVE_TAHUN_AJARAN = "2025/2026";
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyoHSAB8_nHh9qykroRUARkMhvHUJpGv9FiRuRyK6GSf-XmW_sst_AoASKC96G0lcHk/exec";
 
 /* ======================
    UTIL: TANGGAL LOKAL
@@ -11,22 +12,15 @@ function getLocalDateString() {
   return `${y}-${m}-${day}`;
 }
 
+let renunganData = [];
+
 /* ======================
-   DATA (DUMMY / NANTI DARI GSHEET)
+   FETCH DATA GSHEET
 ====================== */
-const renunganData = [
-  {
-    date: getLocalDateString(),
-    judul: "RENUNGAN TEST FINAL",
-    ayat: "Mazmur 118:24",
-    ayat_text: "Inilah hari yang dijadikan TUHAN...",
-    isi: "JIKA INI MUNCUL, MAKA SEMUA MASALAH SELESAI.",
-    refleksi: "Apakah kamu percaya Tuhan menyertaimu?",
-    audio_url: "",
-    status: "published",
-    tahun_ajaran: "2025/2026"
-  }
-];
+async function loadRenunganData() {
+  const res = await fetch(SHEET_API_URL);
+  renunganData = await res.json();
+}
 
 /* ======================
    DATA ACCESS
@@ -186,9 +180,8 @@ function setupCalendarToggle() {
 /* ======================
    INIT
 ====================== */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadRenunganData();
   renderRenungan(getLocalDateString());
   setupCalendarToggle();
-  setupCalendarNavigation();
-  renderCalendar(currentMonth, currentYear);
 });
