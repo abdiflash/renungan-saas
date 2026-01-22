@@ -89,7 +89,11 @@ function renderCalendar(month, year) {
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayStr = getLocalDateString();
+  const today = new Date();
+const todayDay = today.getDate();
+const todayMonth = today.getMonth();
+const todayYear = today.getFullYear();
+
 
   // padding sebelum tanggal 1
   for (let i = 0; i < firstDay; i++) {
@@ -105,12 +109,19 @@ function renderCalendar(month, year) {
 
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-    if (dateStr > todayStr) {
+    const isToday =
+  day === todayDay &&
+  month === todayMonth &&
+  year === todayYear;
+
+const isFuture =
+  new Date(year, month, day) > new Date(todayYear, todayMonth, todayDay);
+
+if (isFuture) {
   cell.classList.add("locked");
   cell.textContent = "🔒";
 } else {
-  // tandai hari ini
-  if (dateStr === todayStr) {
+  if (isToday) {
     cell.classList.add("today");
     cell.title = "Renungan Hari Ini";
   }
