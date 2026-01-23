@@ -55,9 +55,9 @@ function parseData(rows) {
         const v = (i) => (row.c[i] ? row.c[i].v : '');
         
         let d = null;
-        let rawDate = v(0); // Kolom A (Tanggal)
+        let rawDate = v(0); 
 
-        // --- LOGIKA PARSING TANGGAL (TETAP) ---
+        // --- LOGIKA TANGGAL ---
         if (rawDate !== '' && rawDate !== null) {
             if (typeof rawDate === 'number') {
                 d = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
@@ -76,33 +76,41 @@ function parseData(rows) {
             }
         }
 
-        // Validasi Status: SEKARANG DI KOLOM I (Index 8)
-        // Sesuai screenshot Anda: Kolom I berisi 'published'
         const statusRaw = String(v(8)).toLowerCase().trim();
 
         if (!d || isNaN(d.getTime())) return null;
 
-        // --- LOGIKA AUDIO CERDAS (AUTO-DROPBOX) ---
+        // --- LOGIKA AUDIO CERDAS (AUTO-DROPBOX FIXER V2) ---
         let finalAudio = v(6); // Ambil dari Kolom G
         
-        // Jika user memasukkan link Dropbox, kita perbaiki otomatis
+        // Cek apakah ini link Dropbox?
         if (finalAudio && typeof finalAudio === 'string' && finalAudio.includes('dropbox.com')) {
-            // Ubah dl=0 (download page) menjadi raw=1 (direct stream)
-            finalAudio = finalAudio.replace('dl=0', 'raw=1');
+            // Hapus parameter dl=0 atau dl=1 jika ada
+            finalAudio = finalAudio.replace(/dl=0/g, 'raw=1');
+            finalAudio = finalAudio.replace(/dl=1/g, 'raw=1');
+            
+            // Jaga-jaga jika linknya bersih tanpa parameter dl, kita paksa tambah raw=1
+            if (!finalAudio.includes('raw=1')) {
+                // Cek separator, apakah sudah ada tanda tanya (?)
+                if (finalAudio.includes('?')) {
+                    finalAudio += '&raw=1';
+                } else {
+                    finalAudio += '?raw=1';
+                }
+            }
         }
 
-        // === MAPPING DATA SESUAI SCREENSHOT BARU (image_d7c497) ===
         return {
             key: formatDateKey(d),
             dateObj: d,
-            judul: v(1),      // Kolom B: Judul
-            ayat: v(2),       // Kolom C: Ayat
-            ayatText: v(3),   // Kolom D: AyatText
-            teks: v(4),       // Kolom E: Teks
-            refleksi: v(5),   // Kolom F: Refleksi
-            audioUrl: finalAudio,   // Kolom G: AudioURL  // cek dari dropbox
-            tahunAjaran: v(7),// Kolom H: Tahun Ajaran
-            status: statusRaw // Kolom I: Status
+            judul: v(1),
+            ayat: v(2),
+            ayatText: v(3),
+            teks: v(4),
+            refleksi: v(5),
+            audioUrl: finalAudio, 
+            tahunAjaran: v(7),
+            status: statusRaw
         };
 
     }).filter(item => item && item.status === 'published');
