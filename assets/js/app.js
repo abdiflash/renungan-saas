@@ -1,6 +1,6 @@
 /* ================= KONFIGURASI ================= */
 const SHEET_ID = '1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY'; 
-const SHEET_GID = '0'; // Pastikan ini benar (Tab pertama = 0)
+const SHEET_GID = '0'; // Pastikan '0' (Angka)
 
 /* ================= STATE ================= */
 let allRenungan = [];
@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchData();
 });
 
-/* ================= FETCH & DEBUG ================= */
+/* ================= FETCH DATA ================= */
 async function fetchData() {
-    // Query ambil semua kolom A-I
+    // Ambil kolom A-I
     const query = `SELECT A, B, C, D, E, F, G, H, I`; 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(query)}&gid=${SHEET_GID}`;
 
@@ -26,83 +26,71 @@ async function fetchData() {
         const jsonText = text.substring(47).slice(0, -2);
         const json = JSON.parse(jsonText);
 
-        console.log("Full Data:", json); // Cek Console
-
-        // === 🕵️‍♂️ DETEKTIF DATA (AKAN MUNCUL POPUP) ===
-        if (json.table.rows.length > 0) {
-            // Ambil baris pertama yang berisi data (index 0 atau 1)
-            // Kita cek baris terakhir saja biar pasti bukan Header
-            const sampleRow = json.table.rows[json.table.rows.length - 1]; 
-            
-            const rawTgl = sampleRow.c[0] ? sampleRow.c[0].v : 'NULL';
-            const rawStatus = sampleRow.c[7] ? sampleRow.c[7].v : 'NULL';
-            const tipeData = typeof rawTgl;
-
-            // POPUP DIAGNOSA
-            alert(
-                `🕵️‍♂️ CEK DATA MASUK:\n\n` +
-                `1. Tipe Data Tanggal: ${tipeData}\n` +
-                `2. Isi Tanggal Mentah: ${rawTgl}\n` +
-                `3. Status (Kolom H): ${rawStatus}\n\n` +
-                `Foto/Catat pesan ini agar saya bisa perbaiki scriptnya!`
-            );
-        } else {
-            alert("⚠️ Data Kosong! Sheet terbaca tapi tidak ada baris data.");
-        }
-        // ============================================
+        console.log("Data Masuk:", json); // Cek Console untuk debug
 
         parseData(json.table.rows);
         
-        // Render
+        // Cari renungan hari ini
         const todayStr = formatDateKey(today);
         const todayData = allRenungan.find(r => r.key === todayStr);
 
         document.getElementById('loader').classList.add('hidden');
+
         if (todayData) {
             renderRenungan(todayData);
         } else {
+            // Jika tidak ada data hari ini, coba cari data terakhir yang statusnya published
+            // Opsional: agar halaman tidak kosong melompong saat dev
             document.getElementById('emptyState').classList.remove('hidden');
         }
 
     } catch (error) {
-        alert("❌ Error: " + error.message);
+        console.error(error);
+        alert("Gagal memuat data: " + error.message);
     }
 }
 
 function parseData(rows) {
     allRenungan = rows.map(row => {
+        // Helper aman ambil nilai (v) dan nilai terformat (f)
         const v = (i) => (row.c[i] ? row.c[i].v : '');
+        const f = (i) => (row.c[i] ? row.c[i].f : ''); 
+        
         let d = null;
-        let rawDate = v(0);
+        let rawDate = v(0); 
 
-        // --- LOGIKA PARSING PENYELAMAT ---
-        if (rawDate) {
-            // Skenario A: Data berupa Angka Serial Excel (misal: 45314)
+        // === LOGIKA PARSING "SAPU JAGAT" ===
+        if (rawDate !== '' && rawDate !== null) {
+            // 1. Jika data berupa ANGKA (Serial Number Excel/Google Sheet)
             if (typeof rawDate === 'number') {
-                // Konversi Serial Number ke JS Date
-                // Excel base date: Dec 30, 1899
+                // Konversi Serial ke Date (Epoch Google Sheet dimulai 30 Des 1899)
                 d = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
             }
-            // Skenario B: Data berupa String "Date(yyyy,m,d)"
+            // 2. Jika data berupa String Format Google "Date(2026,0,23)"
             else if (typeof rawDate === 'string' && rawDate.includes('Date')) {
                 const parts = rawDate.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if(parts) d = new Date(parts[1], parts[2], parts[3]);
-            } 
-            // Skenario C: Data String "01-23-2026" atau "23/01/2026"
+            }
+            // 3. Jika data berupa String Biasa "01-23-2026" atau "23/01/2026"
             else if (typeof rawDate === 'string') {
-                const clean = rawDate.replace(/-/g, '/');
+                // Bersihkan strip jadi garis miring
+                const clean = rawDate.replace(/-/g, '/'); 
                 if (clean.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
                     const p = clean.split('/');
                     const n1 = parseInt(p[0]);
                     const n2 = parseInt(p[1]);
                     const n3 = parseInt(p[2]);
-                    
+
+                    // Deteksi Format (US vs Indo)
                     if (n1 > 12) d = new Date(n3, n2 - 1, n1); // Indo (23/1/2026)
                     else if (n2 > 12) d = new Date(n3, n1 - 1, n2); // US (1/23/2026)
-                    else d = new Date(n3, n1 - 1, n2); // Default US
+                    else d = new Date(n3, n1 - 1, n2); // Default (1/23/2026)
                 }
             }
         }
+
+        // Validasi Status: Tambahkan .trim() untuk membuang spasi tidak sengaja
+        const statusRaw = String(v(7)).toLowerCase().trim();
 
         if (!d || isNaN(d.getTime())) return null;
 
@@ -115,13 +103,13 @@ function parseData(rows) {
             ayat: v(4),
             ayatText: v(5),
             audioUrl: v(6),
-            status: String(v(7)).toLowerCase().trim(), // Trim spasi jaga-jaga
+            status: statusRaw,
             tahunAjaran: v(8)
         };
     }).filter(item => item && item.status === 'published');
 }
 
-/* ================= RENDER & UTILS (SAMA SEPERTI SEBELUMNYA) ================= */
+/* ================= RENDER LOGIC (TIDAK BERUBAH) ================= */
 function renderRenungan(data) {
     document.getElementById('emptyState').classList.add('hidden');
     document.getElementById('calendar').classList.add('hidden');
@@ -150,6 +138,7 @@ function setupAudioPlayer(urlRaw) {
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
         if (!finalUrl.startsWith('http')) finalUrl = `assets/audio/${finalUrl}`;
+        
         source.src = finalUrl;
         player.load();
         btn.style.display = 'inline-flex';
