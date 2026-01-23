@@ -197,19 +197,6 @@ async function toggleAudio() {
     }
 }
 
-function toggleAudio() {
-    const player = document.getElementById('audioPlayer');
-    const btn = document.getElementById('audioControl');
-    if (player.paused) {
-        player.style.display = 'block';
-        player.play();
-        btn.innerHTML = '⏸️ Pause Audio';
-    } else {
-        player.pause();
-        btn.innerHTML = '▶️ Lanjutkan Audio';
-    }
-}
-
 function showCalendarView() {
     document.getElementById('renungan').classList.add('hidden');
     document.getElementById('emptyState').classList.add('hidden');
