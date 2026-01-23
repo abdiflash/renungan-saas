@@ -151,7 +151,7 @@ function setupAudioPlayer(urlRaw) {
         
         // Fitur Pintar: Deteksi apakah URL Lengkap atau cuma Nama File
         // Jika cuma "20260123.mp3", otomatis tambah path "assets/audio/"
-        if (!finalUrl.startsWith('http')) {
+        if (!finalUrl.startsWith('https')) {
             finalUrl = `assets/audio/${finalUrl}`;
         }
         
