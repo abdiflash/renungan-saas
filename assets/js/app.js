@@ -126,94 +126,90 @@ function renderRenungan(data) {
     setupAudioPlayer(data.audioUrl);
 }
 
-/* ================= LOGIKA AUDIO (ANTI ERROR & DEBUGGER) ================= */
+/* ================= LOGIKA AUDIO (EVENT DRIVEN - STABIL) ================= */
 
 function setupAudioPlayer(urlRaw) {
     const player = document.getElementById('audioPlayer');
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    // 1. Reset Player
+    // 1. Reset Player ke kondisi bersih
     player.pause();
     player.currentTime = 0;
-    player.style.display = 'none';
-    btn.innerHTML = '▶️ Putar Audio';
-    btn.onclick = toggleAudio; 
+    player.style.display = 'none'; // Sembunyikan player native
     
-    // HAPUS LINK DEBUG LAMA (Agar tidak menumpuk)
+    // Hapus link debug biru (sudah tidak perlu karena file sudah ketemu)
     const oldLink = document.getElementById('debugLink');
     if(oldLink) oldLink.remove();
 
+    // 2. Validasi URL
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
         
-        // Auto-Path: Jika cuma nama file, tambah path
+        // Auto-Path
         if (!finalUrl.startsWith('http')) {
             finalUrl = `assets/audio/${finalUrl}`;
         }
-        
-        // 2. Set Source
-        source.src = finalUrl;
-        player.load(); 
 
-        btn.style.display = 'inline-flex';
+        // 3. Pasang URL
+        source.src = finalUrl;
+        player.load(); // Wajib load ulang
+
+        // 4. Reset Tampilan Tombol
+        btn.innerHTML = '▶️ Putar Audio';
         btn.disabled = false;
+        btn.style.display = 'inline-flex';
+        btn.onclick = toggleAudio;
+
+        // === EVENT LISTENER (RAHASIA AGAR TIDAK STUCK) ===
+        // Biarkan player yang mengontrol tombol, bukan sebaliknya.
         
-        // === 3. FITUR DETEKTIF ===
-        // Kita buat link biru di bawah tombol agar Anda bisa klik manual
-        const debugLink = document.createElement('a');
-        debugLink.id = 'debugLink';
-        debugLink.href = finalUrl;
-        debugLink.target = '_blank'; // Buka di tab baru
-        debugLink.innerText = `🔗 KLIK DISINI: Tes Link Audio (${finalUrl})`;
-        
-        // Styling agar terlihat jelas
-        debugLink.style.display = 'block';
-        debugLink.style.marginTop = '15px';
-        debugLink.style.fontSize = '14px';
-        debugLink.style.color = 'blue';
-        debugLink.style.fontWeight = 'bold';
-        debugLink.style.textDecoration = 'underline';
-        debugLink.style.cursor = 'pointer';
-        
-        // Masukkan link ke bawah tombol audio
-        btn.parentNode.appendChild(debugLink);
+        // Saat audio mulai buffering/loading
+        player.onwaiting = () => {
+            btn.innerHTML = '⏳ Memuat...';
+            btn.disabled = true;
+        };
+
+        // Saat audio siap/sedang berbunyi
+        player.onplaying = () => {
+            btn.innerHTML = '⏸️ Pause Audio';
+            btn.disabled = false;
+            player.style.display = 'block'; // Tampilkan bar player asli
+        };
+
+        // Saat audio dipause
+        player.onpause = () => {
+            btn.innerHTML = '▶️ Lanjutkan Audio';
+            btn.disabled = false;
+        };
+
+        // Saat audio selesai (habis durasi)
+        player.onended = () => {
+            btn.innerHTML = '▶️ Putar Ulang';
+            player.style.display = 'none';
+        };
+
+        // Saat error
+        player.onerror = () => {
+            console.error("Audio Error:", player.error);
+            btn.innerHTML = '⚠️ Gagal Memuat';
+            btn.disabled = true;
+        };
 
     } else {
         btn.style.display = 'none';
     }
 }
 
-async function toggleAudio() {
+function toggleAudio() {
     const player = document.getElementById('audioPlayer');
-    const btn = document.getElementById('audioControl');
-
-    // Mencegah error "AbortError" dengan mengunci tombol saat proses loading
-    try {
-        if (player.paused) {
-            // === MAU PLAY ===
-            btn.disabled = true; // KUNCI TOMBOL
-            btn.innerHTML = '⏳ Memuat...'; 
-            player.style.display = 'block';
-
-            // Tunggu sampai benar-benar play
-            await player.play();
-            
-            // Jika sukses:
-            btn.innerHTML = '⏸️ Pause Audio';
-            btn.disabled = false; // BUKA KUNCI
-        } else {
-            // === MAU PAUSE ===
-            player.pause();
-            btn.innerHTML = '▶️ Lanjutkan Audio';
-        }
-    } catch (err) {
-        console.warn("Audio Playback Error:", err);
-        
-        // Jika errornya AbortError, biasanya aman diabaikan (karena user stop paksa)
-        // Tapi tombol harus kita kembalikan
-        btn.innerHTML = '▶️ Putar Audio';
-        btn.disabled = false; 
+    
+    // Kita hanya memberi perintah, urusan UI diurus oleh Event Listener di atas
+    if (player.paused) {
+        // Coba play. Catch error jika browser memblokir (jarang terjadi di klik manual)
+        player.play().catch(e => console.warn("Auto-play blocked:", e));
+    } else {
+        player.pause();
     }
 }
 function showCalendarView() {
