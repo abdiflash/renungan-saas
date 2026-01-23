@@ -29,7 +29,8 @@ function getLocalDateString() {
 async function loadRenunganData() {
   const res = await fetch(SHEET_API_URL);
   const text = await res.text();
-
+  console.log("DATA GSHEET:", renunganData);
+   
   const json = JSON.parse(
     text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
   );
@@ -50,11 +51,12 @@ async function loadRenunganData() {
 ====================== */
 function getRenunganByDate(dateStr) {
   return renunganData.find(r =>
-    r.date === dateStr &&
-    r.status === "published" &&
-    r.tahun_ajaran === ACTIVE_TAHUN_AJARAN
+    String(r.date).trim() === dateStr &&
+    String(r.status).trim().toLowerCase() === "published" &&
+    String(r.tahun_ajaran).trim() === ACTIVE_TAHUN_AJARAN
   );
 }
+
 
 /* ======================
    RENDER RENUNGAN
@@ -164,26 +166,43 @@ function renderAudio(audioUrl) {
 ====================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRenunganData();
-  renderRenungan(getLocalDateString());
-  renderCalendar();
 
+  // render renungan hari ini
+  const todayStr = getLocalDateString();
+  renderRenungan(todayStr);
+
+  // render kalender awal
+  renderCalendar(currentMonth, currentYear);
+
+  // buka kalender
   document.getElementById("openCalendar").onclick = () => {
     document.getElementById("renungan").classList.add("hidden");
     document.getElementById("calendar").classList.remove("hidden");
   };
 
+  // tutup kalender
   document.getElementById("closeCalendar").onclick = () => {
     document.getElementById("calendar").classList.add("hidden");
     document.getElementById("renungan").classList.remove("hidden");
   };
 
+  // bulan sebelumnya
   document.getElementById("prevMonth").onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderCalendar(currentMonth, currentYear);
   };
 
+  // bulan berikutnya
   document.getElementById("nextMonth").onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar(currentMonth, currentYear);
   };
 });
