@@ -1,7 +1,7 @@
 /* ================= KONFIGURASI ================= */
 // Pastikan ID ini benar & Sheet sudah di-Share "Anyone with link -> Viewer"
 const SHEET_ID = '1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY'; 
-const SHEET_GID = '0'; // Biasanya '0' untuk tab pertama
+const SHEET_GID = 'renungan'; // Biasanya '0' untuk tab pertama
 
 /* ================= STATE APLIKASI ================= */
 let allRenungan = [];
