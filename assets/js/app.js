@@ -16,11 +16,15 @@ async function fetchSheetData() {
     const text = await res.text();
     const jsonText = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/)[1];
     const data = JSON.parse(jsonText);
+
     return data.table.rows.map(row => {
       const obj = {};
-      data.table.cols.forEach((col, i) => obj[col.label] = row.c[i] ? row.c[i].v : '');
+      data.table.cols.forEach((col, i) => {
+        let val = row.c[i] ? row.c[i].v : '';
+        obj[col.label] = typeof val === 'string' ? val.trim() : val; // trim otomatis
+      });
       return obj;
-    });
+    }).filter(r => r.status && r.status.toLowerCase() === 'published'); // hanya published
   } catch (err) {
     console.error('Error fetch sheet:', err);
     return [];
@@ -60,14 +64,14 @@ function renderRenungan(renungan) {
 // ===== AUDIO PLAYER =====
 function setupAudio(url) {
   const btn = document.getElementById('audioControl');
-  audio.src = url || '';
+  audio.src = url ? url.trim() : ''; // trim otomatis
   audio.pause();
   btn.textContent = '▶️ Putar Audio';
 
   btn.onclick = () => {
-    if (!url) return alert('Audio belum tersedia!');
+    if (!audio.src) return alert('Audio belum tersedia!');
     if (audio.paused) {
-      audio.play().catch(err => console.warn('Audio error:', err));
+      audio.play().catch(err => console.warn('Audio play error:', err));
       btn.textContent = '⏸️ Pause Audio';
     } else {
       audio.pause();
@@ -90,7 +94,7 @@ function renderCalendar(month = currentMonth, year = currentYear) {
   const monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   monthLabel.textContent = `${monthNames[month]} ${year}`;
 
-  // Blank cells
+  // Blank cells untuk awal bulan
   for(let i=0; i<firstDay.getDay(); i++){
     const empty = document.createElement('div');
     container.appendChild(empty);
@@ -103,7 +107,6 @@ function renderCalendar(month = currentMonth, year = currentYear) {
     cell.classList.add('date-cell');
     cell.textContent = d;
 
-    // Highlight hari ini
     if(dateStr === today) cell.classList.add('today');
 
     // Cek renungan
