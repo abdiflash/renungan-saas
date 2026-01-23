@@ -126,25 +126,74 @@ function renderRenungan(data) {
     setupAudioPlayer(data.audioUrl);
 }
 
+/* ================= LOGIKA AUDIO (UPDATE) ================= */
+
 function setupAudioPlayer(urlRaw) {
     const player = document.getElementById('audioPlayer');
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
+    // 1. Reset Total Player setiap ganti renungan
     player.pause();
+    player.currentTime = 0; // Reset waktu ke 0
     player.style.display = 'none';
     btn.innerHTML = '▶️ Putar Audio';
+    btn.onclick = toggleAudio; // Re-bind event listener
 
+    // 2. Validasi URL
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
-        if (!finalUrl.startsWith('http')) finalUrl = `assets/audio/${finalUrl}`;
         
+        // Fitur Pintar: Kalau di Sheet cuma tulis nama file, otomatis tambah path
+        // Contoh Sheet: "20260123-narasi.mp3" -> Script baca: "assets/audio/20260123-narasi.mp3"
+        if (!finalUrl.startsWith('http')) {
+            finalUrl = `assets/audio/${finalUrl}`;
+        }
+        
+        // 3. Set Source & Load
         source.src = finalUrl;
-        player.load();
+        player.load(); // Wajib dipanggil setelah ganti src
+
+        // Tampilkan tombol
         btn.style.display = 'inline-flex';
         btn.disabled = false;
+        
+        // Debugging: Cek apakah file benar-benar ada
+        player.onerror = () => {
+            console.error("Error memuat audio:", finalUrl);
+            btn.innerHTML = '⚠️ Audio Error (404)';
+            btn.disabled = true;
+        };
+
     } else {
+        // Jika kolom AudioURL kosong
         btn.style.display = 'none';
+    }
+}
+
+// Fungsi Play/Pause yang Aman (Anti Error Promise)
+async function toggleAudio() {
+    const player = document.getElementById('audioPlayer');
+    const btn = document.getElementById('audioControl');
+
+    try {
+        if (player.paused) {
+            player.style.display = 'block'; // Munculkan player bar
+            btn.innerHTML = '⏳ Loading...'; // Feedback visual
+            
+            // Tunggu sampai audio benar-benar play
+            await player.play();
+            
+            // Jika sukses play
+            btn.innerHTML = '⏸️ Pause Audio';
+        } else {
+            player.pause();
+            btn.innerHTML = '▶️ Lanjutkan Audio';
+        }
+    } catch (err) {
+        console.error("Gagal memutar audio:", err);
+        // Kembalikan tombol ke kondisi awal jika gagal
+        btn.innerHTML = '▶️ Putar Audio';
     }
 }
 
