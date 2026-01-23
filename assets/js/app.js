@@ -63,7 +63,7 @@ function getRenunganByDate(dateStr) {
 ====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
-  renderAudio(r.audio_url);
+  renderAudio(r?.audio_url || "");
 
   document.getElementById("renunganDate").textContent = dateStr;
 
