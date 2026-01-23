@@ -6,6 +6,51 @@
   <title>Renungan Harian</title>
 
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ===== Reset & basic ===== */
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; margin: 0; padding: 0; }
+    h1,h2,h3 { margin: 0; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    button { cursor: pointer; }
+
+    /* ===== Header ===== */
+    .app-header { text-align: center; padding: 20px; background: #2196f3; color: #fff; border-radius: 0 0 12px 12px; }
+    .app-header p { margin-top: 6px; font-size: 0.9rem; }
+
+    /* ===== RENUNGAN ===== */
+    #renungan { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    #renungan h2 { color: #ff9800; margin-bottom: 10px; }
+    #renungan time { display: block; margin-bottom: 10px; color: #666; }
+    #audioControl { margin-top: 12px; padding: 10px 16px; background: #2196f3; color: #fff; border: none; border-radius: 8px; transition: 0.2s; }
+    #audioControl:hover { background: #1976d2; }
+
+    /* ===== Calendar Section ===== */
+    #calendar { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .calendar-header h3 { margin: 0; color: #2196f3; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .date-cell { padding: 12px; background: #fefefe; border-radius: 8px; text-align: center; position: relative; transition: 0.2s; }
+    .date-cell:hover { background: #e3f2fd; }
+    .date-cell.today { border: 2px solid #ff9800; font-weight: bold; }
+    .date-cell.has-renungan::after { content: "📖"; position: absolute; top: 4px; right: 4px; font-size: 14px; }
+    .tooltip { display: none; position: absolute; background: #1976d2; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; max-width: 200px; top: 100%; left: 50%; transform: translateX(-50%); z-index: 10; }
+    .date-cell:hover .tooltip { display: block; }
+
+    /* ===== Buttons ===== */
+    .calendar-btn { margin-top: 12px; padding: 10px 16px; border: none; border-radius: 8px; background: #2196f3; color: #fff; transition: 0.2s; }
+    .calendar-btn:hover { background: #1976d2; }
+
+    /* ===== Footer ===== */
+    .app-footer { text-align: center; padding: 12px; color: #666; font-size: 0.9rem; }
+
+    /* ===== Hidden ===== */
+    .hidden { display: none; }
+
+    @media(max-width:600px){
+      .calendar-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+      .date-cell { padding: 8px; font-size: 14px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -26,17 +71,14 @@
 
     <article>
       <h3 id="judul"></h3>
-
       <p><strong id="ayat"></strong></p>
       <blockquote id="ayatText"></blockquote>
-
       <p id="isi"></p>
       <p class="refleksi"><em id="refleksi"></em></p>
     </article>
 
-    <button id="openCalendar" class="calendar-btn">
-      📅 Lihat Kalender Renungan
-    </button>
+    <button id="audioControl">▶️ Putar Audio</button>
+    <button id="openCalendar" class="calendar-btn">📅 Lihat Kalender Renungan</button>
   </section>
 
   <!-- KALENDER -->
@@ -49,9 +91,7 @@
 
     <div id="calendarGrid" class="calendar-grid"></div>
 
-    <button id="closeCalendar" class="calendar-btn">
-      Tutup Kalender
-    </button>
+    <button id="closeCalendar" class="calendar-btn">Tutup Kalender</button>
   </section>
 
 </main>
