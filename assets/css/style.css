@@ -69,6 +69,31 @@ blockquote {
   pointer-events: auto !important;
 }
 
+/* AUDIO BUTTON */
+#audioControl {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: #2f6f4e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#audioControl:hover {
+  background: #1e4d37;
+}
+
+/* AUDIO PLAYER */
+#audioPlayer {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: none;
+}
+
 /* ======================
    KALENDER
 ====================== */
@@ -94,7 +119,7 @@ blockquote {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 /* ======================
@@ -104,34 +129,46 @@ blockquote {
   padding: 10px;
   text-align: center;
   border-radius: 6px;
-  background: #f0f0f0;
-  cursor: pointer;
   user-select: none;
+  position: relative;
+}
+
+/* Tanggal tersedia (<= hari ini) */
+.calendar-day.available {
+  background: #d0f0c0; /* hijau lembut */
+  color: #222;
+  cursor: pointer;
+}
+
+.calendar-day.available:hover {
+  background: #b2e39c;
+}
+
+/* Tanggal future / digembok */
+.calendar-day.locked {
+  background: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.calendar-day.locked::after {
+  content: "🔒";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 14px;
+}
+
+/* HARI INI */
+.calendar-day.today {
+  border: 2px solid #34a853;
+  font-weight: bold;
 }
 
 /* SLOT KOSONG */
 .calendar-day.empty {
   background: transparent;
   cursor: default;
-}
-
-/* TERKUNCI (MASA DEPAN) */
-.calendar-day.locked {
-  background: #ddd;
-  cursor: not-allowed;
-}
-
-/* HARI INI (SOFT) */
-.calendar-day.today {
-  background: #e0f2fe;
-  color: #075985;
-  font-weight: 600;
-  border: 1.5px solid #bae6fd;
-}
-
-/* HOVER */
-.calendar-day:not(.locked):not(.empty):hover {
-  background: #dbeafe;
 }
 
 /* ======================
@@ -141,7 +178,6 @@ blockquote {
   display: none !important;
 }
 
-/* Kalender benar-benar nonaktif saat hidden */
 #calendar.hidden {
   display: none !important;
   pointer-events: none !important;
