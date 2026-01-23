@@ -57,13 +57,12 @@ function parseData(rows) {
         const f = (i) => (row.c[i] ? row.c[i].f : ''); 
         
         let d = null;
-        let rawDate = v(0); 
+        let rawDate = v(0); // Kolom A: Tanggal (Tetap Index 0)
 
-        // === LOGIKA PARSING "SAPU JAGAT" ===
+        // === LOGIKA PARSING "SAPU JAGAT" (TETAP SAMA) ===
         if (rawDate !== '' && rawDate !== null) {
             // 1. Jika data berupa ANGKA (Serial Number Excel/Google Sheet)
             if (typeof rawDate === 'number') {
-                // Konversi Serial ke Date (Epoch Google Sheet dimulai 30 Des 1899)
                 d = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
             }
             // 2. Jika data berupa String Format Google "Date(2026,0,23)"
@@ -73,7 +72,6 @@ function parseData(rows) {
             }
             // 3. Jika data berupa String Biasa "01-23-2026" atau "23/01/2026"
             else if (typeof rawDate === 'string') {
-                // Bersihkan strip jadi garis miring
                 const clean = rawDate.replace(/-/g, '/'); 
                 if (clean.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
                     const p = clean.split('/');
@@ -81,30 +79,30 @@ function parseData(rows) {
                     const n2 = parseInt(p[1]);
                     const n3 = parseInt(p[2]);
 
-                    // Deteksi Format (US vs Indo)
-                    if (n1 > 12) d = new Date(n3, n2 - 1, n1); // Indo (23/1/2026)
-                    else if (n2 > 12) d = new Date(n3, n1 - 1, n2); // US (1/23/2026)
-                    else d = new Date(n3, n1 - 1, n2); // Default (1/23/2026)
+                    if (n1 > 12) d = new Date(n3, n2 - 1, n1); 
+                    else if (n2 > 12) d = new Date(n3, n1 - 1, n2); 
+                    else d = new Date(n3, n1 - 1, n2); 
                 }
             }
         }
 
-        // Validasi Status: Tambahkan .trim() untuk membuang spasi tidak sengaja
-        const statusRaw = String(v(7)).toLowerCase().trim();
+        // Validasi Status: SEKARANG DI KOLOM I (Index 8)
+        const statusRaw = String(v(8)).toLowerCase().trim();
 
         if (!d || isNaN(d.getTime())) return null;
 
+        // === MAPPING DATA BARU ===
         return {
             key: formatDateKey(d),
             dateObj: d,
-            judul: v(1),
-            teks: v(2),
-            refleksi: v(3),
-            ayat: v(4),
-            ayatText: v(5),
-            audioUrl: v(6),
-            status: statusRaw,
-            tahunAjaran: v(8)
+            judul: v(1),      // Kolom B
+            ayat: v(2),       // Kolom C (Sebelumnya v(4))
+            ayatText: v(3),   // Kolom D (Sebelumnya v(5))
+            teks: v(4),       // Kolom E (Sebelumnya v(2))
+            refleksi: v(5),   // Kolom F (Sebelumnya v(3))
+            audioUrl: v(6),   // Kolom G (Tetap)
+            tahunAjaran: v(7),// Kolom H (Sebelumnya v(8))
+            status: statusRaw // Kolom I (Sebelumnya v(7))
         };
     }).filter(item => item && item.status === 'published');
 }
