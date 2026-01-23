@@ -1,214 +1,119 @@
-/* ======================
-   KONFIGURASI
-====================== */
-const ACTIVE_TAHUN_AJARAN = "2025/2026";
+// ===== KONFIGURASI =====
+const SHEET_ID = '1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY';
+const SHEET_NAME = 'renungan';
+let audio = new Audio();
 
-// 🔴 GANTI DENGAN ID GOOGLE SHEET KAMU
-const SHEET_ID = "1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY";
-const SHEET_NAME = "renungan";
-
-const SHEET_API_URL =
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
-
-let renunganData = [];
-
-/* ======================
-   UTIL TANGGAL LOKAL
-====================== */
-function getLocalDateString() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-/* ======================
-   LOAD DATA DARI SHEET
-====================== */
-async function loadRenunganData() {
-  const res = await fetch(SHEET_API_URL);
-  const text = await res.text();
-  console.log("DATA GSHEET:", renunganData);
-   
-  const json = JSON.parse(
-    text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
-  );
-
-  const headers = json.table.cols.map(c => c.label);
-
-  renunganData = json.table.rows.map(r => {
-    const obj = {};
-    r.c.forEach((cell, i) => {
-      obj[headers[i]] = cell ? cell.v : "";
+// ===== FETCH DATA DARI GOOGLE SHEET =====
+async function fetchSheetData() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonText = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/)[1];
+    const data = JSON.parse(jsonText);
+    return data.table.rows.map(row => {
+      const obj = {};
+      data.table.cols.forEach((col, i) => obj[col.label] = row.c[i] ? row.c[i].v : '');
+      return obj;
     });
-    return obj;
-  });
+  } catch(err) {
+    console.error('Error fetch sheet:', err);
+    return [];
+  }
 }
 
-/* ======================
-   DATA ACCESS
-====================== */
-function getRenunganByDate(dateStr) {
-  return renunganData.find(r =>
-    String(r.date).trim() === dateStr &&
-    String(r.status).trim().toLowerCase() === "published" &&
-    String(r.tahun_ajaran).trim() === ACTIVE_TAHUN_AJARAN
-  );
-}
-
-
-/* ======================
-   RENDER RENUNGAN
-====================== */
-function renderRenungan(dateStr) {
-  const r = getRenunganByDate(dateStr);
-
-  document.getElementById("renunganDate").textContent = dateStr;
-
-  if (!r) {
-    document.getElementById("judul").textContent = "Renungan tidak tersedia";
-    document.getElementById("ayat").textContent = "";
-    document.getElementById("ayatText").textContent =
-      "Renungan belum dipublikasikan atau bukan bagian dari tahun ajaran aktif.";
-    document.getElementById("isi").textContent = "";
-    document.getElementById("refleksi").textContent = "";
-
-    // pastikan audio aman
-    renderAudio(""); 
+// ===== RENDER RENUNGAN =====
+function renderRenungan(renungan) {
+  const container = document.getElementById('renungan');
+  if (!renungan) {
+    container.innerHTML = `<p>Renungan tidak tersedia.</p>`;
     return;
   }
-
-  document.getElementById("judul").textContent = r.judul || "";
-  document.getElementById("ayat").textContent = r.ayat || "";
-  document.getElementById("ayatText").textContent = r.ayat_text || "";
-  document.getElementById("isi").textContent = r.isi || "";
-  document.getElementById("refleksi").textContent = r.refleksi || "";
-
-  // 🔹 panggil audio dengan aman
-  renderAudio(r.audio_url || "");
+  container.innerHTML = `
+    <h2>${renungan.Judul}</h2>
+    <p>${renungan.Teks}</p>
+    <button id="audioControl">▶️ Putar Audio</button>
+  `;
+  setupAudio(renungan.AudioURL);
 }
 
+// ===== AUDIO PLAYER =====
+function setupAudio(url) {
+  const btn = document.getElementById('audioControl');
+  audio.src = url;
+  audio.pause();
+  btn.textContent = '▶️ Putar Audio';
 
-/* ======================
-   KALENDER
-====================== */
-let currentDate = new Date();
+  btn.onclick = () => {
+    if (audio.paused) {
+      audio.play().catch(err => console.warn('Audio error:', err));
+      btn.textContent = '⏸️ Pause Audio';
+    } else {
+      audio.pause();
+      btn.textContent = '▶️ Putar Audio';
+    }
+  };
+}
 
-function renderCalendar() {
-  const grid = document.getElementById("calendarGrid");
-  const label = document.getElementById("monthLabel");
-  grid.innerHTML = "";
+// ===== RENDER KALENDER BULANAN =====
+function renderCalendar(data) {
+  const container = document.getElementById('calendar');
+  container.innerHTML = '';
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  const monthNames = [
-    "Januari","Februari","Maret","April","Mei","Juni",
-    "Juli","Agustus","September","Oktober","November","Desember"
-  ];
-
-  label.textContent = `${monthNames[month]} ${year}`;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
-  for (let i = 0; i < firstDay; i++) {
-    grid.appendChild(document.createElement("div"));
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+  // Fill blank cells for starting day
+  for(let i=0; i<firstDay.getDay(); i++){
+    const emptyCell = document.createElement('div');
+    container.appendChild(emptyCell);
   }
 
-  for (let d = 1; d <= daysInMonth; d++) {
-    const cell = document.createElement("div");
-    cell.className = "calendar-day";
+  for(let d=1; d<=lastDay.getDate(); d++){
+    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.classList.add('date-cell');
     cell.textContent = d;
 
-    const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-
-    const isFuture = new Date(year,month,d) > today;
-    const isToday =
-      d === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear();
-
-    if (isFuture) {
-      cell.classList.add("locked");
-      cell.textContent = "🔒";
-    } else {
-      if (isToday) cell.classList.add("today");
-
-      cell.onclick = () => {
-        renderRenungan(dateStr);
-        document.getElementById("calendar").classList.add("hidden");
-        document.getElementById("renungan").classList.remove("hidden");
-      };
+    if(dateStr === today.toISOString().slice(0,10)){
+      cell.classList.add('today');
     }
 
-    grid.appendChild(cell);
+    const renungan = data.find(r => r.Tanggal === dateStr);
+    if(renungan){
+      cell.classList.add('has-renungan');
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = renungan.Judul;
+      cell.appendChild(tooltip);
+    }
+
+    cell.onclick = () => {
+      if(renungan){
+        renderRenungan(renungan);
+      }
+    };
+
+    container.appendChild(cell);
   }
 }
-function renderAudio(audioUrl) {
-  const btn = document.getElementById("audioBtn");
-  const player = document.getElementById("audioPlayer");
 
-  if (!audioUrl) {
-    btn.classList.add("hidden");
-    player.classList.add("hidden");
-    player.src = "";
-    return;
-  }
+// ===== INIT APP =====
+async function initApp(){
+  const data = await fetchSheetData();
 
-  btn.classList.remove("hidden");
-  btn.onclick = () => {
-    player.src = audioUrl;
-    player.classList.remove("hidden");
-    player.play();
-  };
+  // Render renungan hari ini
+  const today = new Date().toISOString().slice(0,10);
+  const todayRenungan = data.find(r => r.Tanggal === today);
+  renderRenungan(todayRenungan);
+
+  // Render kalender
+  renderCalendar(data);
 }
 
-
-/* ======================
-   INIT
-====================== */
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadRenunganData();
-
-  // render renungan hari ini
-  const todayStr = getLocalDateString();
-  renderRenungan(todayStr);
-
-  // render kalender awal
-  renderCalendar(currentMonth, currentYear);
-
-  // buka kalender
-  document.getElementById("openCalendar").onclick = () => {
-    document.getElementById("renungan").classList.add("hidden");
-    document.getElementById("calendar").classList.remove("hidden");
-  };
-
-  // tutup kalender
-  document.getElementById("closeCalendar").onclick = () => {
-    document.getElementById("calendar").classList.add("hidden");
-    document.getElementById("renungan").classList.remove("hidden");
-  };
-
-  // bulan sebelumnya
-  document.getElementById("prevMonth").onclick = () => {
-    currentMonth--;
-    if (currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
-    }
-    renderCalendar(currentMonth, currentYear);
-  };
-
-  // bulan berikutnya
-  document.getElementById("nextMonth").onclick = () => {
-    currentMonth++;
-    if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
-    }
-    renderCalendar(currentMonth, currentYear);
-  };
-});
+// Jalankan
+initApp();
