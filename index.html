@@ -7,7 +7,7 @@
 
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    /* ===== Reset & basic ===== */
+    /* ===== Reset & Basic ===== */
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; margin: 0; padding: 0; }
     h1,h2,h3 { margin: 0; }
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -21,8 +21,13 @@
     #renungan { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
     #renungan h2 { color: #ff9800; margin-bottom: 10px; }
     #renungan time { display: block; margin-bottom: 10px; color: #666; }
+    #renungan article p, #renungan article blockquote { margin: 8px 0; line-height: 1.6; }
+    #renungan article blockquote { border-left: 3px solid #ff9800; padding-left: 10px; color: #555; font-style: italic; }
+
+    /* ===== Audio Button & Player ===== */
     #audioControl { margin-top: 12px; padding: 10px 16px; background: #2196f3; color: #fff; border: none; border-radius: 8px; transition: 0.2s; }
     #audioControl:hover { background: #1976d2; }
+    #audioPlayer { width: 100%; margin-top: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
     /* ===== Calendar Section ===== */
     #calendar { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -35,6 +40,8 @@
     .date-cell.has-renungan::after { content: "📖"; position: absolute; top: 4px; right: 4px; font-size: 14px; }
     .tooltip { display: none; position: absolute; background: #1976d2; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; max-width: 200px; top: 100%; left: 50%; transform: translateX(-50%); z-index: 10; }
     .date-cell:hover .tooltip { display: block; }
+    .date-cell.locked { background: #eee; color: #aaa; cursor: not-allowed; }
+    .date-cell.locked:hover { background: #eee; }
 
     /* ===== Buttons ===== */
     .calendar-btn { margin-top: 12px; padding: 10px 16px; border: none; border-radius: 8px; background: #2196f3; color: #fff; transition: 0.2s; }
@@ -78,6 +85,7 @@
     </article>
 
     <button id="audioControl">▶️ Putar Audio</button>
+    <!-- Audio player muncul di bawah tombol secara dinamis -->
     <button id="openCalendar" class="calendar-btn">📅 Lihat Kalender Renungan</button>
   </section>
 
