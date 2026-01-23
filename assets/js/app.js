@@ -133,44 +133,48 @@ function setupAudioPlayer(urlRaw) {
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    // Reset Player
+    // 1. Reset Player
     player.pause();
     player.currentTime = 0;
     player.style.display = 'none';
     btn.innerHTML = '▶️ Putar Audio';
     btn.onclick = toggleAudio; 
     
-    // HAPUS LINK DEBUG LAMA (JIKA ADA)
+    // HAPUS LINK DEBUG LAMA (Agar tidak menumpuk)
     const oldLink = document.getElementById('debugLink');
     if(oldLink) oldLink.remove();
 
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
         
-        // Auto-Path
+        // Auto-Path: Jika cuma nama file, tambah path
         if (!finalUrl.startsWith('http')) {
             finalUrl = `assets/audio/${finalUrl}`;
         }
         
-        // Set Source
+        // 2. Set Source
         source.src = finalUrl;
         player.load(); 
 
         btn.style.display = 'inline-flex';
         btn.disabled = false;
         
-        // === FITUR DEBUGGER ===
+        // === 3. FITUR DETEKTIF ===
         // Kita buat link biru di bawah tombol agar Anda bisa klik manual
         const debugLink = document.createElement('a');
         debugLink.id = 'debugLink';
         debugLink.href = finalUrl;
         debugLink.target = '_blank'; // Buka di tab baru
-        debugLink.innerText = `🔗 Cek File Audio: ${finalUrl}`;
+        debugLink.innerText = `🔗 KLIK DISINI: Tes Link Audio (${finalUrl})`;
+        
+        // Styling agar terlihat jelas
         debugLink.style.display = 'block';
-        debugLink.style.marginTop = '10px';
-        debugLink.style.fontSize = '12px';
+        debugLink.style.marginTop = '15px';
+        debugLink.style.fontSize = '14px';
         debugLink.style.color = 'blue';
+        debugLink.style.fontWeight = 'bold';
         debugLink.style.textDecoration = 'underline';
+        debugLink.style.cursor = 'pointer';
         
         // Masukkan link ke bawah tombol audio
         btn.parentNode.appendChild(debugLink);
