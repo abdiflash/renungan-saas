@@ -129,7 +129,13 @@ function renderRenungan(data) {
     document.getElementById('displayAyatText').innerText = `"${data.ayatText}"`;
     document.getElementById('displayIsi').innerHTML = data.teks.replace(/\n/g, '<br>');
     document.getElementById('displayRefleksi').innerText = data.refleksi;
-
+    
+    const headerTahun = document.getElementById('tahunAjaranInfo');
+    
+    if (headerTahun && data.tahunAjaran) {
+        headerTahun.innerText = data.tahunAjaran; 
+    }
+    
     setupAudioPlayer(data.audioUrl);
 }
 
