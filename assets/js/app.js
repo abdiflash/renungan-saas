@@ -1,7 +1,10 @@
 /* ================= KONFIGURASI ================= */
-// Pastikan ID ini benar & Sheet sudah di-Share "Anyone with link -> Viewer"
+// ID Spreadsheet Anda (Sudah Benar)
 const SHEET_ID = '1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY'; 
-const SHEET_GID = 'renungan'; // Biasanya '0' untuk tab pertama
+
+// ⚠️ PENTING: GID harus ANGKA. Tab pertama selalu '0'.
+// Jangan tulis nama sheet ('renungan') di sini.
+const SHEET_GID = '0'; 
 
 /* ================= STATE APLIKASI ================= */
 let allRenungan = [];
@@ -23,10 +26,24 @@ async function fetchData() {
 
     try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+        
         const text = await res.text();
         // Membersihkan wrapper JSON dari Google
         const jsonText = text.substring(47).slice(0, -2);
         const json = JSON.parse(jsonText);
+
+        // --- DEBUGGER (HAPUS NANTI JIKA SUDAH JALAN) ---
+        console.log("Data Mentah dari Google:", json);
+        if (json.table.rows.length > 0) {
+            const row1 = json.table.rows[0];
+            const rawTgl = row1.c[0] ? row1.c[0].v : 'KOSONG';
+            // Alert ini akan muncul memberitahu format asli di komputer Anda
+            // alert(`🔍 DEBUG DATA:\nFormat Tanggal Baris 1: ${rawTgl}\nJika tanggal ini muncul, koneksi sukses!`);
+        } else {
+            alert("⚠️ Data Kosong! Sheet terbaca tapi tidak ada isinya.");
+        }
+        // ------------------------------------------------
 
         parseData(json.table.rows);
         
@@ -46,7 +63,7 @@ async function fetchData() {
 
     } catch (error) {
         console.error("Error Fetching:", error);
-        document.getElementById('loader').innerHTML = "⚠️ Gagal memuat data.<br>Cek ID Sheet & Koneksi Internet.";
+        document.getElementById('loader').innerHTML = `⚠️ Gagal memuat data.<br>Error: ${error.message}<br><br>Pastikan ID Sheet Benar & Share = Anyone Viewer.`;
     }
 }
 
@@ -55,39 +72,48 @@ function parseData(rows) {
         const v = (i) => (row.c[i] ? row.c[i].v : '');
         
         let d = null;
-        const rawDate = v(0);
+        const rawDate = v(0); // Ambil data kolom A
 
         if (rawDate) {
-            // SKENARIO 1: Format "Date(2026,0,23)" (Paling umum dari Google)
+            // SKENARIO 1: Format Standar Google "Date(2026,0,23)"
             if (typeof rawDate === 'string' && rawDate.includes('Date')) {
                 const parts = rawDate.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if(parts) d = new Date(parts[1], parts[2], parts[3]);
             } 
-            // SKENARIO 2: Format Text Amerika dengan GARIS MIRING atau STRIP (01/23/2026 atau 01-23-2026)
-            // Regex ini mendeteksi angka yang dipisah oleh / atau -
-            else if (typeof rawDate === 'string' && rawDate.match(/^\d{1,2}[/-]\d{1,2}[/-]\d{4}$/)) {
-                // Ganti semua strip jadi garis miring dulu biar mudah displit
+            // SKENARIO 2: Format String (01-23-2026 atau 23/01/2026)
+            else if (typeof rawDate === 'string') {
+                // Ubah semua tanda strip (-) jadi garis miring (/) agar seragam
                 const cleanDate = rawDate.replace(/-/g, '/');
-                const parts = cleanDate.split('/');
                 
-                // Cek mana yang Bulan mana yang Hari
-                // parts[0] = Angka pertama (bisa bulan/hari)
-                // parts[1] = Angka kedua
-                
-                // Jika angka pertama > 12, pasti itu Format HARI/BULAN (Indo)
-                if (parseInt(parts[0]) > 12) {
-                    d = new Date(parts[2], parts[1] - 1, parts[0]);
-                } else {
-                    // Jika tidak, asumsi Format BULAN/HARI (US - Sesuai gambar Anda)
-                    d = new Date(parts[2], parts[0] - 1, parts[1]);
+                // Pastikan formatnya angka/angka/angka
+                if (cleanDate.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
+                    const parts = cleanDate.split('/'); // [Angka1, Angka2, Tahun]
+                    
+                    const p0 = parseInt(parts[0]); // Angka Pertama
+                    const p1 = parseInt(parts[1]); // Angka Kedua
+                    const p2 = parseInt(parts[2]); // Tahun
+
+                    // LOGIKA PINTAR:
+                    // Jika Angka Kedua > 12 (misal 01/23/2026), maka Angka Kedua PASTI Hari.
+                    // Maka formatnya: Bulan/Hari/Tahun (US Format)
+                    if (p1 > 12) {
+                        d = new Date(p2, p0 - 1, p1);
+                    } 
+                    // Jika Angka Pertama > 12 (misal 23/01/2026), maka Angka Pertama PASTI Hari.
+                    // Maka formatnya: Hari/Bulan/Tahun (Indo Format)
+                    else if (p0 > 12) {
+                        d = new Date(p2, p1 - 1, p0);
+                    } 
+                    // Jika keduanya <= 12 (misal 01/02/2026), kita asumsi US Format (Bulan duluan)
+                    // sesuai screenshot Sheet Anda (01-23-2026)
+                    else {
+                        d = new Date(p2, p0 - 1, p1);
+                    }
                 }
-            }
-            // SKENARIO 3: Sudah berupa objek Date
-            else {
-                d = new Date(rawDate);
             }
         }
         
+        // Validasi: Jika d bukan tanggal valid, skip
         if (!d || isNaN(d.getTime())) return null;
 
         return {
