@@ -100,7 +100,7 @@ function parseData(rows) {
             ayatText: v(3),   // Kolom D: AyatText
             teks: v(4),       // Kolom E: Teks
             refleksi: v(5),   // Kolom F: Refleksi
-            audioUrl: v(6),   // Kolom G: AudioURL
+            audioUrl: finalAudio,   // Kolom G: AudioURL  // cek dari dropbox
             tahunAjaran: v(7),// Kolom H: Tahun Ajaran
             status: statusRaw // Kolom I: Status
         };
