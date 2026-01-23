@@ -131,14 +131,12 @@ function renderRenungan(data) {
     document.getElementById('displayRefleksi').innerText = data.refleksi;
 
     // Ambil tahun ajaran dari data yang sedang aktif
-    const yearElement = document.getElementById('academicYear');
-    if (yearElement && data.tahunAjaran) {
-        yearElement.innerText = data.tahunAjaran;
-    }
-    const headerTahun = document.getElementById('tahunAjaranInfo');
+    onsole.log("Data yang sedang dirender:", data); // Tambahkan ini!
     
-    if (headerTahun && data.tahunAjaran) {
-        headerTahun.innerText = data.tahunAjaran; 
+    // ... sisa kode render Anda ...
+    const yearElement = document.getElementById('academicYear');
+    if (yearElement) {
+        yearElement.innerText = data.tahunAjaran || "Tahun tidak ditemukan";
     }
     
     setupAudioPlayer(data.audioUrl);
