@@ -130,15 +130,6 @@ function renderRenungan(data) {
     document.getElementById('displayIsi').innerHTML = data.teks.replace(/\n/g, '<br>');
     document.getElementById('displayRefleksi').innerText = data.refleksi;
 
-    // Ambil tahun ajaran dari data yang sedang aktif
-    onsole.log("Data yang sedang dirender:", data); // Tambahkan ini!
-    
-    // ... sisa kode render Anda ...
-    const yearElement = document.getElementById('academicYear');
-    if (yearElement) {
-        yearElement.innerText = data.tahunAjaran || "Tahun tidak ditemukan";
-    }
-    
     setupAudioPlayer(data.audioUrl);
 }
 
@@ -310,4 +301,13 @@ function formatDateKey(date) {
 function loadAcademicYear() {
     const saved = localStorage.getItem('renungan_ta');
     if(saved) document.getElementById('academicYear').innerText = saved;
+}
+
+function editAcademicYear() {
+    const current = document.getElementById('academicYear').innerText;
+    const newVal = prompt("Ubah Tahun Ajaran:", current);
+    if (newVal) {
+        document.getElementById('academicYear').innerText = newVal;
+        localStorage.setItem('renungan_ta', newVal);
+    }
 }
