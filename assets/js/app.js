@@ -159,13 +159,13 @@ function renderAudio(audioUrl) {
   }
 
   btn.classList.remove("hidden");
-
   btn.onclick = () => {
     player.src = audioUrl;
     player.classList.remove("hidden");
     player.play();
   };
 }
+
 
 /* ======================
    INIT
