@@ -133,43 +133,47 @@ function setupAudioPlayer(urlRaw) {
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    // 1. Reset Player ke kondisi awal (Stop total)
+    // Reset Player
     player.pause();
     player.currentTime = 0;
-    player.removeAttribute('src'); // Bersihkan src lama
-    source.removeAttribute('src'); // Bersihkan source lama
-    
     player.style.display = 'none';
     btn.innerHTML = '▶️ Putar Audio';
     btn.onclick = toggleAudio; 
+    
+    // HAPUS LINK DEBUG LAMA (JIKA ADA)
+    const oldLink = document.getElementById('debugLink');
+    if(oldLink) oldLink.remove();
 
-    // 2. Validasi URL
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
         
-        // Auto-Path: Jika cuma nama file, tambah folder assets
+        // Auto-Path
         if (!finalUrl.startsWith('http')) {
             finalUrl = `assets/audio/${finalUrl}`;
         }
         
-        // Log untuk pengecekan (Cek Console Browser)
-        console.log("🎵 Menyiapkan Audio:", finalUrl);
-
-        // 3. Set Source Baru
+        // Set Source
         source.src = finalUrl;
-        player.load(); // Wajib: Load ulang data meta
+        player.load(); 
 
         btn.style.display = 'inline-flex';
         btn.disabled = false;
         
-        // --- DETEKTIF ERROR 404 ---
-        // Jika file tidak ketemu, script ini akan teriak
-        player.onerror = (e) => {
-            console.error("❌ Error Media:", player.error);
-            btn.innerHTML = '⚠️ File Audio Hilang/Rusak';
-            btn.disabled = true;
-            alert(`Gagal memuat audio!\nLink: ${finalUrl}\n\nPastikan file sudah di-upload ke GitHub di folder 'assets/audio/' dan namanya PERSIS sama (Huruf Besar/Kecil).`);
-        };
+        // === FITUR DEBUGGER ===
+        // Kita buat link biru di bawah tombol agar Anda bisa klik manual
+        const debugLink = document.createElement('a');
+        debugLink.id = 'debugLink';
+        debugLink.href = finalUrl;
+        debugLink.target = '_blank'; // Buka di tab baru
+        debugLink.innerText = `🔗 Cek File Audio: ${finalUrl}`;
+        debugLink.style.display = 'block';
+        debugLink.style.marginTop = '10px';
+        debugLink.style.fontSize = '12px';
+        debugLink.style.color = 'blue';
+        debugLink.style.textDecoration = 'underline';
+        
+        // Masukkan link ke bawah tombol audio
+        btn.parentNode.appendChild(debugLink);
 
     } else {
         btn.style.display = 'none';
