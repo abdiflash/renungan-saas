@@ -54,33 +54,55 @@ function parseData(rows) {
     allRenungan = rows.map(row => {
         const v = (i) => (row.c[i] ? row.c[i].v : '');
         
-        // Parsing Tanggal dengan aman (mengatasi format "Date(yyyy,m,d)" atau string)
         let d = null;
-        if (row.c[0]) {
-            if (typeof row.c[0].v === 'string' && row.c[0].v.includes('Date')) {
-                const parts = row.c[0].v.match(/Date\((\d+),(\d+),(\d+)\)/);
+        const rawDate = v(0);
+
+        if (rawDate) {
+            // SKENARIO 1: Format "Date(2026,0,23)" (Paling umum dari Google)
+            if (typeof rawDate === 'string' && rawDate.includes('Date')) {
+                const parts = rawDate.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if(parts) d = new Date(parts[1], parts[2], parts[3]);
-            } else {
-                d = new Date(v(0));
+            } 
+            // SKENARIO 2: Format Text Amerika dengan GARIS MIRING atau STRIP (01/23/2026 atau 01-23-2026)
+            // Regex ini mendeteksi angka yang dipisah oleh / atau -
+            else if (typeof rawDate === 'string' && rawDate.match(/^\d{1,2}[/-]\d{1,2}[/-]\d{4}$/)) {
+                // Ganti semua strip jadi garis miring dulu biar mudah displit
+                const cleanDate = rawDate.replace(/-/g, '/');
+                const parts = cleanDate.split('/');
+                
+                // Cek mana yang Bulan mana yang Hari
+                // parts[0] = Angka pertama (bisa bulan/hari)
+                // parts[1] = Angka kedua
+                
+                // Jika angka pertama > 12, pasti itu Format HARI/BULAN (Indo)
+                if (parseInt(parts[0]) > 12) {
+                    d = new Date(parts[2], parts[1] - 1, parts[0]);
+                } else {
+                    // Jika tidak, asumsi Format BULAN/HARI (US - Sesuai gambar Anda)
+                    d = new Date(parts[2], parts[0] - 1, parts[1]);
+                }
+            }
+            // SKENARIO 3: Sudah berupa objek Date
+            else {
+                d = new Date(rawDate);
             }
         }
         
-        if (!d || isNaN(d)) return null;
+        if (!d || isNaN(d.getTime())) return null;
 
-        // PENTING: Urutan kolom harus sesuai Google Sheet Anda (A-H)
         return {
-            key: formatDateKey(d),     // Format YYYY-MM-DD untuk pencarian
-            dateObj: d,                // Objek Date asli
-            judul: v(1),               // Col B
-            teks: v(2),                // Col C
-            refleksi: v(3),            // Col D
-            ayat: v(4),                // Col E
-            ayatText: v(5),            // Col F
-            audioUrl: v(6),            // Col G
-            status: String(v(7)).toLowerCase(), // Col H
-            tahunAjaran: v(8)          // Col I
+            key: formatDateKey(d),
+            dateObj: d,
+            judul: v(1),
+            teks: v(2),
+            refleksi: v(3),
+            ayat: v(4),
+            ayatText: v(5),
+            audioUrl: v(6),
+            status: String(v(7)).toLowerCase(),
+            tahunAjaran: v(8)
         };
-    }).filter(item => item && item.status === 'published'); // Hanya ambil yang published
+    }).filter(item => item && item.status === 'published');
 }
 
 /* ================= 2. RENDER RENUNGAN UTAMA ================= */
