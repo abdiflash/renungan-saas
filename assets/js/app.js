@@ -82,6 +82,15 @@ function parseData(rows) {
 
         if (!d || isNaN(d.getTime())) return null;
 
+        // --- LOGIKA AUDIO CERDAS (AUTO-DROPBOX) ---
+        let finalAudio = v(6); // Ambil dari Kolom G
+        
+        // Jika user memasukkan link Dropbox, kita perbaiki otomatis
+        if (finalAudio && typeof finalAudio === 'string' && finalAudio.includes('dropbox.com')) {
+            // Ubah dl=0 (download page) menjadi raw=1 (direct stream)
+            finalAudio = finalAudio.replace('dl=0', 'raw=1');
+        }
+
         // === MAPPING DATA SESUAI SCREENSHOT BARU (image_d7c497) ===
         return {
             key: formatDateKey(d),
