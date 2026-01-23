@@ -52,58 +52,50 @@ async function fetchData() {
 
 function parseData(rows) {
     allRenungan = rows.map(row => {
-        // Helper aman ambil nilai (v) dan nilai terformat (f)
         const v = (i) => (row.c[i] ? row.c[i].v : '');
-        const f = (i) => (row.c[i] ? row.c[i].f : ''); 
         
         let d = null;
-        let rawDate = v(0); // Kolom A: Tanggal (Tetap Index 0)
+        let rawDate = v(0); // Kolom A (Tanggal)
 
-        // === LOGIKA PARSING "SAPU JAGAT" (TETAP SAMA) ===
+        // --- LOGIKA PARSING TANGGAL (TETAP) ---
         if (rawDate !== '' && rawDate !== null) {
-            // 1. Jika data berupa ANGKA (Serial Number Excel/Google Sheet)
             if (typeof rawDate === 'number') {
                 d = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
-            }
-            // 2. Jika data berupa String Format Google "Date(2026,0,23)"
-            else if (typeof rawDate === 'string' && rawDate.includes('Date')) {
+            } else if (typeof rawDate === 'string' && rawDate.includes('Date')) {
                 const parts = rawDate.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if(parts) d = new Date(parts[1], parts[2], parts[3]);
-            }
-            // 3. Jika data berupa String Biasa "01-23-2026" atau "23/01/2026"
-            else if (typeof rawDate === 'string') {
+            } else if (typeof rawDate === 'string') {
                 const clean = rawDate.replace(/-/g, '/'); 
                 if (clean.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
                     const p = clean.split('/');
-                    const n1 = parseInt(p[0]);
-                    const n2 = parseInt(p[1]);
-                    const n3 = parseInt(p[2]);
-
-                    if (n1 > 12) d = new Date(n3, n2 - 1, n1); 
-                    else if (n2 > 12) d = new Date(n3, n1 - 1, n2); 
-                    else d = new Date(n3, n1 - 1, n2); 
+                    const n1 = parseInt(p[0]); const n2 = parseInt(p[1]); const n3 = parseInt(p[2]);
+                    if (n1 > 12) d = new Date(n3, n2 - 1, n1);
+                    else if (n2 > 12) d = new Date(n3, n1 - 1, n2);
+                    else d = new Date(n3, n1 - 1, n2);
                 }
             }
         }
 
         // Validasi Status: SEKARANG DI KOLOM I (Index 8)
+        // Sesuai screenshot Anda: Kolom I berisi 'published'
         const statusRaw = String(v(8)).toLowerCase().trim();
 
         if (!d || isNaN(d.getTime())) return null;
 
-        // === MAPPING DATA BARU ===
+        // === MAPPING DATA SESUAI SCREENSHOT BARU (image_d7c497) ===
         return {
             key: formatDateKey(d),
             dateObj: d,
-            judul: v(1),      // Kolom B
-            ayat: v(2),       // Kolom C (Sebelumnya v(4))
-            ayatText: v(3),   // Kolom D (Sebelumnya v(5))
-            teks: v(4),       // Kolom E (Sebelumnya v(2))
-            refleksi: v(5),   // Kolom F (Sebelumnya v(3))
-            audioUrl: v(6),   // Kolom G (Tetap)
-            tahunAjaran: v(7),// Kolom H (Sebelumnya v(8))
-            status: statusRaw // Kolom I (Sebelumnya v(7))
+            judul: v(1),      // Kolom B: Judul
+            ayat: v(2),       // Kolom C: Ayat
+            ayatText: v(3),   // Kolom D: AyatText
+            teks: v(4),       // Kolom E: Teks
+            refleksi: v(5),   // Kolom F: Refleksi
+            audioUrl: v(6),   // Kolom G: AudioURL
+            tahunAjaran: v(7),// Kolom H: Tahun Ajaran
+            status: statusRaw // Kolom I: Status
         };
+
     }).filter(item => item && item.status === 'published');
 }
 
