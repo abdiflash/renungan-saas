@@ -63,7 +63,6 @@ function getRenunganByDate(dateStr) {
 ====================== */
 function renderRenungan(dateStr) {
   const r = getRenunganByDate(dateStr);
-  renderAudio(r?.audio_url || "");
 
   document.getElementById("renunganDate").textContent = dateStr;
 
@@ -74,15 +73,22 @@ function renderRenungan(dateStr) {
       "Renungan belum dipublikasikan atau bukan bagian dari tahun ajaran aktif.";
     document.getElementById("isi").textContent = "";
     document.getElementById("refleksi").textContent = "";
+
+    // pastikan audio aman
+    renderAudio(""); 
     return;
   }
 
-  document.getElementById("judul").textContent = r.judul;
-  document.getElementById("ayat").textContent = r.ayat;
-  document.getElementById("ayatText").textContent = r.ayat_text;
-  document.getElementById("isi").textContent = r.isi;
-  document.getElementById("refleksi").textContent = r.refleksi;
+  document.getElementById("judul").textContent = r.judul || "";
+  document.getElementById("ayat").textContent = r.ayat || "";
+  document.getElementById("ayatText").textContent = r.ayat_text || "";
+  document.getElementById("isi").textContent = r.isi || "";
+  document.getElementById("refleksi").textContent = r.refleksi || "";
+
+  // 🔹 panggil audio dengan aman
+  renderAudio(r.audio_url || "");
 }
+
 
 /* ======================
    KALENDER
