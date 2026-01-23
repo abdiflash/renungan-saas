@@ -309,3 +309,11 @@ function loadAcademicYear() {
     if(saved) document.getElementById('academicYear').innerText = saved;
 }
 
+function editAcademicYear() {
+    const current = document.getElementById('academicYear').innerText;
+    const newVal = prompt("Ubah Tahun Ajaran:", current);
+    if (newVal) {
+        document.getElementById('academicYear').innerText = newVal;
+        localStorage.setItem('renungan_ta', newVal);
+    }
+}
