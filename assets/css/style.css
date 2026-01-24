@@ -266,35 +266,36 @@ audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 .close-btn:hover { background: #e74c3c; color: white; border-color: #e74c3c; }
 
 .app-footer {
-  background: var(--primary-dark);
-  color: white;
+  /* Menghapus background dan border-radius */
+  background: transparent;
+  color: var(--text-muted);
   text-align: center;
-  padding: 1.5rem 1rem;
-  margin-top: 30px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  padding: 3rem 1rem; /* Memberi ruang napas yang cukup di bawah */
+  margin-top: 20px;
+  border-top: 1px solid #eee; /* Garis tipis transparan sebagai pemisah halus */
 }
 
 .footer-content p {
-  margin: 5px 0;
-  font-size: 0.85rem;
-  opacity: 0.8;
+  margin: 8px 0;
+  font-size: 0.95rem; /* Sedikit lebih besar dari sebelumnya */
 }
 
 .footer-content strong {
-  color: white;
-  opacity: 1;
+  color: var(--primary); /* Menonjolkan nama sekolah dengan warna tema */
 }
 
 .footer-link {
-  color: var(--accent);
+  color: var(--primary);
   text-decoration: none;
-  font-size: 0.8rem;
-  transition: opacity 0.2s;
+  font-size: 1.1rem; /* Ukuran font lebih besar agar mudah dibaca/diklik */
+  font-weight: 600;
+  transition: color 0.2s;
+  display: inline-block;
+  margin-top: 5px;
 }
 
 .footer-link:hover {
-  opacity: 1;
+  color: var(--highlight); /* Berubah warna saat hover untuk interaksi */
   text-decoration: underline;
 }
 
