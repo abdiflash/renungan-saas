@@ -266,8 +266,36 @@ audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 .close-btn:hover { background: #e74c3c; color: white; border-color: #e74c3c; }
 
 .app-footer {
-  text-align: center; padding: 2rem;
-  color: var(--text-muted); font-size: 0.85rem;
+  background: var(--primary-dark);
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  margin-top: 30px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.footer-content p {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.footer-content strong {
+  color: white;
+  opacity: 1;
+}
+
+.footer-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: opacity 0.2s;
+}
+
+.footer-link:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .loading { padding: 50px; text-align: center; color: var(--text-muted); }
