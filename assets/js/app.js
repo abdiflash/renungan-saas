@@ -10,7 +10,6 @@ today.setHours(0,0,0,0);
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", () => {
-    loadAcademicYear();
     fetchData();
 });
 
@@ -130,6 +129,13 @@ function renderRenungan(data) {
     document.getElementById('displayIsi').innerHTML = data.teks.replace(/\n/g, '<br>');
     document.getElementById('displayRefleksi').innerText = data.refleksi;
 
+    / --- LOGIKA TAHUN AJARAN OTOMATIS ---
+    const yearElement = document.getElementById('academicYear');
+    if (yearElement) {
+        // Jika data tahunAjaran ada di Sheet, pakai itu. Jika kosong, beri teks default.
+        yearElement.innerText = data.tahunAjaran || "2025/2026";
+    }
+    
     setupAudioPlayer(data.audioUrl);
 }
 
@@ -296,18 +302,4 @@ function formatDateKey(date) {
     const offset = date.getTimezoneOffset();
     const localDate = new Date(date.getTime() - (offset*60*1000));
     return localDate.toISOString().split('T')[0];
-}
-
-function loadAcademicYear() {
-    const saved = localStorage.getItem('renungan_ta');
-    if(saved) document.getElementById('academicYear').innerText = saved;
-}
-
-function editAcademicYear() {
-    const current = document.getElementById('academicYear').innerText;
-    const newVal = prompt("Ubah Tahun Ajaran:", current);
-    if (newVal) {
-        document.getElementById('academicYear').innerText = newVal;
-        localStorage.setItem('renungan_ta', newVal);
-    }
 }
