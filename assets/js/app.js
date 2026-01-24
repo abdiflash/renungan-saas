@@ -129,7 +129,7 @@ function renderRenungan(data) {
     document.getElementById('displayIsi').innerHTML = data.teks.replace(/\n/g, '<br>');
     document.getElementById('displayRefleksi').innerText = data.refleksi;
 
-    / --- LOGIKA TAHUN AJARAN OTOMATIS ---
+    /* --- LOGIKA TAHUN AJARAN OTOMATIS --- */
     const yearElement = document.getElementById('academicYear');
     if (yearElement) {
         // Jika data tahunAjaran ada di Sheet, pakai itu. Jika kosong, beri teks default.
