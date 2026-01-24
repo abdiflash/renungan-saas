@@ -1,6 +1,7 @@
 /* ================= KONFIGURASI ================= */
-const SHEET_ID = '1ncjWQ9ZUAZXTppHcKKH5WrivrfINIrHnAO1BQOgp7EY'; 
-const SHEET_GID = '0'; // Pastikan '0' (Angka)
+// Ambil data dari file config.js
+const SHEET_ID = CONFIG.SHEET_ID;
+const SHEET_GID = CONFIG.SHEET_GID;
 
 /* ================= STATE ================= */
 let allRenungan = [];
@@ -10,6 +11,10 @@ today.setHours(0,0,0,0);
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", () => {
+// Set Identitas Sekolah di Footer secara otomatis
+    document.getElementById('footerSchoolName').innerText = CONFIG.SCHOOL_NAME;
+    document.getElementById('footerSchoolLink').innerText = CONFIG.SCHOOL_SITE;
+    document.getElementById('footerSchoolLink').href = CONFIG.SCHOOL_URL;
     fetchData();
 });
 
