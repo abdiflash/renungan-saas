@@ -129,11 +129,14 @@ function setupAudioPlayer(urlRaw) {
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    if (!player || !btn) return;
+    if (!player || !btn || !source) return;
 
     player.pause();
     player.currentTime = 0;
+    
+    // Sembunyikan dulu di awal
     player.style.display = 'none';
+    btn.style.display = 'none';
     
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
@@ -144,12 +147,16 @@ function setupAudioPlayer(urlRaw) {
         source.src = finalUrl;
         player.load(); 
 
+        // Tampilkan tombol dan slider
+        btn.style.display = 'inline-flex';
         btn.innerHTML = '▶️ Putar Audio';
         btn.disabled = false;
-        btn.style.display = 'inline-flex';
-        btn.onclick = toggleAudio;
+        
+        // Memunculkan slider audio di bawah tombol
+        player.style.display = 'block'; 
+        player.style.marginTop = '15px';
+        player.style.width = '100%';
 
-        // Mengembalikan Event Listeners dari versi backup Anda
         player.onwaiting = () => {
             btn.innerHTML = '⏳ Memuat...';
             btn.disabled = true;
@@ -158,7 +165,6 @@ function setupAudioPlayer(urlRaw) {
         player.onplaying = () => {
             btn.innerHTML = '⏸️ Pause Audio';
             btn.disabled = false;
-            player.style.display = 'block'; 
         };
 
         player.onpause = () => {
@@ -168,16 +174,19 @@ function setupAudioPlayer(urlRaw) {
 
         player.onended = () => {
             btn.innerHTML = '▶️ Putar Ulang';
-            player.style.display = 'none';
+            // Slider tetap dibiarkan muncul agar bisa digeser manual
+            player.style.display = 'block'; 
         };
 
         player.onerror = () => {
             btn.innerHTML = '⚠️ Gagal Memuat';
             btn.disabled = true;
+            player.style.display = 'none';
         };
 
     } else {
         btn.style.display = 'none';
+        player.style.display = 'none';
     }
 }
 
