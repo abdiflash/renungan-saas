@@ -272,40 +272,33 @@ async function loadHitCounter() {
     const countElement = document.getElementById('count');
     if (!countElement) return;
 
-    // Namespace unik untuk sekolah Anda
     const namespace = "renungan-saas-abdiflash"; 
     const key = "visitor_count";
 
     try {
-        // Mencoba mengambil data asli dari API
+        // 1. Mencoba ambil data real dari API
         const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
         const data = await response.json();
 
         if (data && data.value) {
             animateValue(countElement, 0, data.value, 1000);
-            localStorage.setItem('saved_count', data.value); // Simpan untuk cadangan
+            localStorage.setItem('visitor_sim', data.value); // Sinkronisasi cadangan
         } else {
             throw new Error('Data invalid');
         }
-    /* ================= UPDATE DI APP.JS ================= */
-} catch (error) {
-    console.warn("Counter Error:", error);
-    
-    // Ambil angka terakhir dari memori browser, jika tidak ada pakai 100
-    let savedCount = parseInt(localStorage.getItem('visitor_sim')) || 100;
-    
-    // Tambah 1 setiap kali halaman dimuat
-    savedCount += 1;
-    
-    // Simpan lagi ke memori browser
-    localStorage.setItem('visitor_sim', savedCount);
-    
-    // Tampilkan angkanya dengan animasi
-    animateValue(countElement, 0, savedCount, 1000);
-}
+    } catch (error) {
+        // 2. Jika API gagal, gunakan simulasi lokal agar angka tidak "macet"
+        console.warn("Counter API offline, menggunakan simulasi.");
+        
+        let savedCount = parseInt(localStorage.getItem('visitor_sim')) || 100;
+        savedCount += 1; // Tambah 1 setiap refresh
+        
+        localStorage.setItem('visitor_sim', savedCount);
+        animateValue(countElement, 0, savedCount, 1000);
+    }
 }
 
-// Fungsi agar angka terlihat "menghitung" saat muncul
+// Fungsi animasi angka menghitung
 function animateValue(obj, start, end, duration) {
     let startTimestamp = null;
     const step = (timestamp) => {
