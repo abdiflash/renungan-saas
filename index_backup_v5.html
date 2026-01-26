@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renungan Harian Sekolah</title>
+  
+  <link rel="stylesheet" href="assets/css/style.css?v=6">
+</head>
+
+<body>
+
+<header class="app-header">
+  <h1>Renungan Harian</h1>
+  <p>Tahun Ajaran: <strong id="academicYear">Memuat...</strong></p>
+</header>
+
+<main class="container">
+
+  <div id="loader" class="loading">
+    ⏳ Sedang mengambil data renungan...
+  </div>
+
+  <section id="renungan" class="hidden">
+    <header>
+      <h2>Renungan Hari Ini</h2>
+      <time id="displayDate"></time>
+    </header>
+
+    <article>
+      <h3 id="displayJudul"></h3>
+      
+      <div class="ayat-box">
+        <span id="displayAyat" class="ayat-ref"></span>
+        <blockquote id="displayAyatText" class="ayat-text"></blockquote>
+      </div>
+
+      <div id="displayIsi"></div>
+
+      <div class="refleksi-box">
+        <div class="refleksi-label">Refleksi</div>
+        <p id="displayRefleksi" class="refleksi-content"></p>
+      </div>
+    </article>
+
+    <div class="audio-wrapper">
+        <button id="audioControl" onclick="toggleAudio()">▶️ Putar Audio</button>
+        <audio id="audioPlayer" controls>
+            <source id="audioSource" src="" type="audio/mpeg">
+            Browser Anda tidak mendukung audio player.
+        </audio>
+    </div>
+
+    <div class="action-area">
+        <button id="openCalendarBtn" class="calendar-btn" onclick="showCalendarView()">📅 Buka Kalender</button>
+    </div>
+  </section>
+
+  <section id="emptyState" class="hidden" style="text-align: center; background: white; padding: 30px; border-radius: 12px;">
+      <h3>Belum ada renungan hari ini.</h3>
+      <p>Silakan buka kalender untuk melihat renungan tanggal lain.</p>
+      <button class="calendar-btn" onclick="showCalendarView()">📅 Buka Kalender</button>
+  </section>
+
+  <section id="calendar" class="hidden">
+    <div class="calendar-header">
+      <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+      <h3 id="calendarMonthLabel"></h3>
+      <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+    </div>
+
+    <div class="calendar-grid" style="margin-bottom: 5px;">
+        <div class="day-name">Min</div><div class="day-name">Sen</div><div class="day-name">Sel</div>
+        <div class="day-name">Rab</div><div class="day-name">Kam</div><div class="day-name">Jum</div><div class="day-name">Sab</div>
+    </div>
+    
+    <div id="calendarGrid" class="calendar-grid"></div>
+
+    <div class="action-area">
+      <button class="calendar-btn close-btn" onclick="hideCalendarView()">Tutup Kalender</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <p>&copy; 2026 Renungan Harian <strong id="footerSchoolName">Sekolah</strong></p>
+    <p><a href="#" id="footerSchoolLink" target="_blank" class="footer-link">Loading...</a></p>
+  </div>
+</footer>
+
+<script src="assets/js/config.js?v=1.0"></script>
+<script src="assets/js/app.js?v=1.1"></script>
+
+<script src="assets/js/app.js?v=6"></script>
+
+</body>
+</html>
