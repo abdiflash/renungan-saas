@@ -31,20 +31,19 @@
 
   <section id="renungan" class="hidden">
     <header>
-      <h2>Renungan Hari Ini</h2>
-      <time id="displayDate" style="display: block; margin-bottom: 15px;"></time>
+  <h2>Renungan Hari Ini</h2>
+  <time id="displayDate"></time>
+  
+  <div class="action-area-top">
+      <button class="btn-elegant calendar-btn-top" onclick="showCalendarView()">
+          📅 Buka Kalender
+      </button>
       
-      <div class="action-area" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
-          <button id="openCalendarBtn" class="calendar-btn" onclick="showCalendarView()" style="margin: 0;">📅 Buka Kalender</button>
-          
-          <div class="audio-wrapper" style="margin: 0;">
-              <button id="audioControl" onclick="toggleAudio()" style="padding: 10px 15px; border-radius: 8px;">▶️ Putar Audio</button>
-              <audio id="audioPlayer" style="display: none;">
-                  <source id="audioSource" src="" type="audio/mpeg">
-              </audio>
-          </div>
-      </div>
-    </header>
+      <button id="audioControl" class="btn-elegant audio-btn-top" onclick="toggleAudio()">
+          ▶️ Putar Audio
+      </button>
+  </div>
+</header>
 
     <article>
       <h3 id="displayJudul"></h3>
@@ -103,7 +102,7 @@
 </footer>
 
 <script src="assets/js/config.js?v=1.1"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="assets/js/app.js?v=8"></script>
 
 <script>
   // Fungsi dipanggil setelah data renungan muncul di app.js
