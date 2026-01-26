@@ -142,6 +142,18 @@ button { font-family: inherit; cursor: pointer; border: none; }
     background-color: var(--accent);
 }
 
+/* Pastikan slider audio terlihat modern */
+#audioPlayer {
+    width: 100%;
+    max-width: 320px; /* Batasi lebar agar rapi di desktop */
+    margin: 15px auto 0 auto;
+    display: block;
+    height: 35px; /* Ketinggian standar agar kontrol pas */
+    filter: sepia(20%) saturate(70%) hue-rotate(90deg); /* Opsional: sedikit nuansa hijau */
+}
+
+
+
 /* ======================
    5. CONTENT AREA
 ====================== */
