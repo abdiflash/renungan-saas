@@ -36,6 +36,7 @@ async function fetchData() {
 
         if (todayData) {
             renderRenungan(todayData);
+            loadHitCounter();
         } else {
             document.getElementById('emptyState').classList.remove('hidden');
         }
@@ -264,4 +265,43 @@ function formatDateKey(date) {
     const offset = date.getTimezoneOffset();
     const localDate = new Date(date.getTime() - (offset*60*1000));
     return localDate.toISOString().split('T')[0];
+}
+
+/* ================= HIT COUNTER LOGIC ================= */
+async function loadHitCounter() {
+    const countElement = document.getElementById('count');
+    
+    // Ganti 'renungan-saas-sekolah' dengan ID unik sekolah Anda agar tidak tercampur
+    const namespace = "renungan-saas-abdiflash"; 
+    const key = "visitor_count";
+
+    try {
+        // Memanggil API untuk menambah (+1) dan mengambil nilai terbaru
+        const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+        const data = await response.json();
+
+        if (data && data.value) {
+            // Animasi angka bertambah (opsional)
+            animateValue(countElement, 0, data.value, 1000);
+        } else {
+            countElement.innerText = "120+"; // Fallback jika API limit
+        }
+    } catch (error) {
+        console.warn("Counter Error:", error);
+        countElement.innerText = "100+"; // Fallback jika server down
+    }
+}
+
+// Fungsi agar angka terlihat "menghitung" saat muncul
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString('id-ID');
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
 }
