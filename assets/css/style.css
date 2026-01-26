@@ -130,11 +130,11 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 .audio-slider {
     width: 100%;
-    max-width: 300px; /* Batasi lebar slider agar tidak terlalu panjang */
+    max-width: 300px; /* Supaya tidak melebar memenuhi layar */
+    margin: 15px auto; /* Memberi jarak dari tombol dan ke tengah */
+    display: block;    /* Agar margin auto bekerja */
+    border-radius: 8px;
     height: 35px;
-    border-radius: 50px;
-    background-color: #f1f3f4;
-    outline: none;
 }
 
 /* Tweak agar slider seragam dengan tema hijau */
