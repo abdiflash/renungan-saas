@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Renungan Harian Sekolah</title>
+  <title>Renungan Harian Sekolah - Edueasy.id</title>
   
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); // Ganti dengan ID GA4 Edueasy Anda
+  </script>
+
   <link rel="stylesheet" href="assets/css/style.css?v=6">
 </head>
 
@@ -24,7 +32,18 @@
   <section id="renungan" class="hidden">
     <header>
       <h2>Renungan Hari Ini</h2>
-      <time id="displayDate"></time>
+      <time id="displayDate" style="display: block; margin-bottom: 15px;"></time>
+      
+      <div class="action-area" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+          <button id="openCalendarBtn" class="calendar-btn" onclick="showCalendarView()" style="margin: 0;">📅 Buka Kalender</button>
+          
+          <div class="audio-wrapper" style="margin: 0;">
+              <button id="audioControl" onclick="toggleAudio()" style="padding: 10px 15px; border-radius: 8px;">▶️ Putar Audio</button>
+              <audio id="audioPlayer" style="display: none;">
+                  <source id="audioSource" src="" type="audio/mpeg">
+              </audio>
+          </div>
+      </div>
     </header>
 
     <article>
@@ -43,16 +62,8 @@
       </div>
     </article>
 
-    <div class="audio-wrapper">
-        <button id="audioControl" onclick="toggleAudio()">▶️ Putar Audio</button>
-        <audio id="audioPlayer" controls>
-            <source id="audioSource" src="" type="audio/mpeg">
-            Browser Anda tidak mendukung audio player.
-        </audio>
-    </div>
-
-    <div class="action-area">
-        <button id="openCalendarBtn" class="calendar-btn" onclick="showCalendarView()">📅 Buka Kalender</button>
+    <div class="reader-stats" style="text-align: center; margin-top: 30px; padding: 15px; color: #666; font-size: 0.9em; border-top: 1px dashed #ccc;">
+        <p>📖 Hari ini sudah dibaca oleh <span id="count" style="font-weight: bold; color: #2c3e50;">...</span> orang</p>
     </div>
   </section>
 
@@ -86,14 +97,30 @@
 <footer class="app-footer">
   <div class="footer-content">
     <p>&copy; 2026 Renungan Harian <strong id="footerSchoolName">Sekolah</strong></p>
-    <p><a href="#" id="footerSchoolLink" target="_blank" class="footer-link">Loading...</a></p>
+    <p><a href="#" id="footerSchoolLink" target="_blank" class="footer-link">Visit Website</a></p>
+    <small style="display: block; margin-top: 10px; opacity: 0.6;">Powered by edueasy.id</small>
   </div>
 </footer>
 
 <script src="assets/js/config.js?v=1.0"></script>
-<script src="assets/js/app.js?v=1.1"></script>
-
 <script src="assets/js/app.js?v=6"></script>
+
+<script>
+  // Fungsi dipanggil setelah data renungan muncul di app.js
+  function loadHitCounter() {
+    const namespace = "edueasy-athalia"; // Nama unik klien
+    const key = "daily-renungan";
+    
+    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+      .then(res => res.json())
+      .then(res => {
+        document.getElementById('count').innerText = res.value;
+      })
+      .catch(() => {
+        document.getElementById('count').innerText = "banyak"; 
+      });
+  }
+</script>
 
 </body>
 </html>
