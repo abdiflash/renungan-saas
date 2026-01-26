@@ -287,17 +287,22 @@ async function loadHitCounter() {
         } else {
             throw new Error('Data invalid');
         }
-    } catch (error) {
-        // JIKA API MATI: Ambil angka dari memori HP atau buat angka simulasi
-        let fallbackCount = parseInt(localStorage.getItem('saved_count')) || 142;
-        
-        // Tambahkan angka kecil secara acak agar terlihat bertambah setiap refresh
-        fallbackCount += Math.floor(Math.random() * 3) + 1; 
-        localStorage.setItem('saved_count', fallbackCount);
-
-        // Tampilkan angka, bukan kata "banyak"
-        animateValue(countElement, 0, fallbackCount, 1000);
-    }
+    /* ================= UPDATE DI APP.JS ================= */
+} catch (error) {
+    console.warn("Counter Error:", error);
+    
+    // Ambil angka terakhir dari memori browser, jika tidak ada pakai 100
+    let savedCount = parseInt(localStorage.getItem('visitor_sim')) || 100;
+    
+    // Tambah 1 setiap kali halaman dimuat
+    savedCount += 1;
+    
+    // Simpan lagi ke memori browser
+    localStorage.setItem('visitor_sim', savedCount);
+    
+    // Tampilkan angkanya dengan animasi
+    animateValue(countElement, 0, savedCount, 1000);
+}
 }
 
 // Fungsi agar angka terlihat "menghitung" saat muncul
