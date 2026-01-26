@@ -40,7 +40,7 @@ async function fetchData() {
             document.getElementById('emptyState').classList.remove('hidden');
         }
 
-        // PANGGIL HIT COUNTER SETELAH DATA BERHASIL DIMUAT
+        // Panggil Hit Counter setelah data termuat
         if (typeof loadHitCounter === 'function') {
             loadHitCounter();
         }
@@ -54,7 +54,6 @@ async function fetchData() {
 function parseData(rows) {
     allRenungan = rows.map(row => {
         const v = (i) => (row.c[i] ? row.c[i].v : '');
-        
         let d = null;
         let rawDate = v(0); 
 
@@ -123,16 +122,17 @@ function renderRenungan(data) {
     setupAudioPlayer(data.audioUrl);
 }
 
-/* ================= LOGIKA AUDIO (STABIL & AMAN) ================= */
+/* ================= LOGIKA AUDIO (MENGGUNAKAN VERSI BACKUP ANDA) ================= */
 function setupAudioPlayer(urlRaw) {
     const player = document.getElementById('audioPlayer');
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    if (!player || !btn || !source) return; // Guard clause agar tidak null error
+    if (!player || !btn) return;
 
     player.pause();
     player.currentTime = 0;
+    player.style.display = 'none';
     
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
@@ -141,18 +141,39 @@ function setupAudioPlayer(urlRaw) {
         }
 
         source.src = finalUrl;
-        player.load();
+        player.load(); 
 
         btn.innerHTML = '▶️ Putar Audio';
         btn.disabled = false;
         btn.style.display = 'inline-flex';
-        
-        // Event Listeners untuk UI tombol
-        player.onwaiting = () => { btn.innerHTML = '⏳ Memuat...'; btn.disabled = true; };
-        player.onplaying = () => { btn.innerHTML = '⏸️ Pause Audio'; btn.disabled = false; };
-        player.onpause = () => { btn.innerHTML = '▶️ Lanjutkan'; btn.disabled = false; };
-        player.onended = () => { btn.innerHTML = '▶️ Putar Ulang'; };
-        player.onerror = () => { btn.innerHTML = '⚠️ Audio Error'; btn.disabled = true; };
+        btn.onclick = toggleAudio;
+
+        // Mengembalikan Event Listeners dari versi backup Anda
+        player.onwaiting = () => {
+            btn.innerHTML = '⏳ Memuat...';
+            btn.disabled = true;
+        };
+
+        player.onplaying = () => {
+            btn.innerHTML = '⏸️ Pause Audio';
+            btn.disabled = false;
+            player.style.display = 'block'; 
+        };
+
+        player.onpause = () => {
+            btn.innerHTML = '▶️ Lanjutkan Audio';
+            btn.disabled = false;
+        };
+
+        player.onended = () => {
+            btn.innerHTML = '▶️ Putar Ulang';
+            player.style.display = 'none';
+        };
+
+        player.onerror = () => {
+            btn.innerHTML = '⚠️ Gagal Memuat';
+            btn.disabled = true;
+        };
 
     } else {
         btn.style.display = 'none';
