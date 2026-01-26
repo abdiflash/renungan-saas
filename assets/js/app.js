@@ -1,5 +1,4 @@
 /* ================= KONFIGURASI ================= */
-// Ambil data dari file config.js
 const SHEET_ID = CONFIG.SHEET_ID;
 const SHEET_GID = CONFIG.SHEET_GID;
 
@@ -11,7 +10,6 @@ today.setHours(0,0,0,0);
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", () => {
-// Set Identitas Sekolah di Footer secara otomatis
     document.getElementById('footerSchoolName').innerText = CONFIG.SCHOOL_NAME;
     document.getElementById('footerSchoolLink').innerText = CONFIG.SCHOOL_SITE;
     document.getElementById('footerSchoolLink').href = CONFIG.SCHOOL_URL;
@@ -20,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* ================= FETCH DATA ================= */
 async function fetchData() {
-    // Ambil kolom A-I
     const query = `SELECT A, B, C, D, E, F, G, H, I`; 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(query)}&gid=${SHEET_GID}`;
 
@@ -30,11 +27,8 @@ async function fetchData() {
         const jsonText = text.substring(47).slice(0, -2);
         const json = JSON.parse(jsonText);
 
-        console.log("Data Masuk:", json); // Cek Console untuk debug
-
         parseData(json.table.rows);
         
-        // Cari renungan hari ini
         const todayStr = formatDateKey(today);
         const todayData = allRenungan.find(r => r.key === todayStr);
 
@@ -43,9 +37,12 @@ async function fetchData() {
         if (todayData) {
             renderRenungan(todayData);
         } else {
-            // Jika tidak ada data hari ini, coba cari data terakhir yang statusnya published
-            // Opsional: agar halaman tidak kosong melompong saat dev
             document.getElementById('emptyState').classList.remove('hidden');
+        }
+
+        // PANGGIL HIT COUNTER SETELAH DATA BERHASIL DIMUAT
+        if (typeof loadHitCounter === 'function') {
+            loadHitCounter();
         }
 
     } catch (error) {
@@ -61,7 +58,6 @@ function parseData(rows) {
         let d = null;
         let rawDate = v(0); 
 
-        // --- LOGIKA TANGGAL ---
         if (rawDate !== '' && rawDate !== null) {
             if (typeof rawDate === 'number') {
                 d = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
@@ -74,33 +70,19 @@ function parseData(rows) {
                     const p = clean.split('/');
                     const n1 = parseInt(p[0]); const n2 = parseInt(p[1]); const n3 = parseInt(p[2]);
                     if (n1 > 12) d = new Date(n3, n2 - 1, n1);
-                    else if (n2 > 12) d = new Date(n3, n1 - 1, n2);
                     else d = new Date(n3, n1 - 1, n2);
                 }
             }
         }
 
         const statusRaw = String(v(8)).toLowerCase().trim();
-
         if (!d || isNaN(d.getTime())) return null;
 
-        // --- LOGIKA AUDIO CERDAS (AUTO-DROPBOX FIXER V2) ---
-        let finalAudio = v(6); // Ambil dari Kolom G
-        
-        // Cek apakah ini link Dropbox?
+        let finalAudio = v(6);
         if (finalAudio && typeof finalAudio === 'string' && finalAudio.includes('dropbox.com')) {
-            // Hapus parameter dl=0 atau dl=1 jika ada
-            finalAudio = finalAudio.replace(/dl=0/g, 'raw=1');
-            finalAudio = finalAudio.replace(/dl=1/g, 'raw=1');
-            
-            // Jaga-jaga jika linknya bersih tanpa parameter dl, kita paksa tambah raw=1
+            finalAudio = finalAudio.replace(/dl=0/g, 'raw=1').replace(/dl=1/g, 'raw=1');
             if (!finalAudio.includes('raw=1')) {
-                // Cek separator, apakah sudah ada tanda tanya (?)
-                if (finalAudio.includes('?')) {
-                    finalAudio += '&raw=1';
-                } else {
-                    finalAudio += '?raw=1';
-                }
+                finalAudio += finalAudio.includes('?') ? '&raw=1' : '?raw=1';
             }
         }
 
@@ -116,11 +98,10 @@ function parseData(rows) {
             tahunAjaran: v(7),
             status: statusRaw
         };
-
     }).filter(item => item && item.status === 'published');
 }
 
-/* ================= RENDER LOGIC (TIDAK BERUBAH) ================= */
+/* ================= RENDER LOGIC ================= */
 function renderRenungan(data) {
     document.getElementById('emptyState').classList.add('hidden');
     document.getElementById('calendar').classList.add('hidden');
@@ -134,85 +115,44 @@ function renderRenungan(data) {
     document.getElementById('displayIsi').innerHTML = data.teks.replace(/\n/g, '<br>');
     document.getElementById('displayRefleksi').innerText = data.refleksi;
 
-    /* --- LOGIKA TAHUN AJARAN OTOMATIS --- */
     const yearElement = document.getElementById('academicYear');
     if (yearElement) {
-        // Jika data tahunAjaran ada di Sheet, pakai itu. Jika kosong, beri teks default.
         yearElement.innerText = data.tahunAjaran || "2025/2026";
     }
     
     setupAudioPlayer(data.audioUrl);
 }
 
-/* ================= LOGIKA AUDIO (EVENT DRIVEN - STABIL) ================= */
-
+/* ================= LOGIKA AUDIO (STABIL & AMAN) ================= */
 function setupAudioPlayer(urlRaw) {
     const player = document.getElementById('audioPlayer');
     const btn = document.getElementById('audioControl');
     const source = document.getElementById('audioSource');
 
-    // 1. Reset Player ke kondisi bersih
+    if (!player || !btn || !source) return; // Guard clause agar tidak null error
+
     player.pause();
     player.currentTime = 0;
-    player.style.display = 'none'; // Sembunyikan player native
     
-    // Hapus link debug biru (sudah tidak perlu karena file sudah ketemu)
-    const oldLink = document.getElementById('debugLink');
-    if(oldLink) oldLink.remove();
-
-    // 2. Validasi URL
     if (urlRaw && urlRaw.trim() !== "") {
         let finalUrl = urlRaw.trim();
-        
-        // Auto-Path
         if (!finalUrl.startsWith('http')) {
             finalUrl = `assets/audio/${finalUrl}`;
         }
 
-        // 3. Pasang URL
         source.src = finalUrl;
-        player.load(); // Wajib load ulang
+        player.load();
 
-        // 4. Reset Tampilan Tombol
         btn.innerHTML = '▶️ Putar Audio';
         btn.disabled = false;
         btn.style.display = 'inline-flex';
-        btn.onclick = toggleAudio;
-
-        // === EVENT LISTENER (RAHASIA AGAR TIDAK STUCK) ===
-        // Biarkan player yang mengontrol tombol, bukan sebaliknya.
         
-        // Saat audio mulai buffering/loading
-        player.onwaiting = () => {
-            btn.innerHTML = '⏳ Memuat...';
-            btn.disabled = true;
-        };
-
-        // Saat audio siap/sedang berbunyi
-        player.onplaying = () => {
-            btn.innerHTML = '⏸️ Pause Audio';
-            btn.disabled = false;
-            player.style.display = 'block'; // Tampilkan bar player asli
-        };
-
-        // Saat audio dipause
-        player.onpause = () => {
-            btn.innerHTML = '▶️ Lanjutkan Audio';
-            btn.disabled = false;
-        };
-
-        // Saat audio selesai (habis durasi)
-        player.onended = () => {
-            btn.innerHTML = '▶️ Putar Ulang';
-            player.style.display = 'none';
-        };
-
-        // Saat error
-        player.onerror = () => {
-            console.error("Audio Error:", player.error);
-            btn.innerHTML = '⚠️ Gagal Memuat';
-            btn.disabled = true;
-        };
+        // Event Listeners untuk UI tombol
+        player.onwaiting = () => { btn.innerHTML = '⏳ Memuat...'; btn.disabled = true; };
+        player.onplaying = () => { btn.innerHTML = '⏸️ Pause Audio'; btn.disabled = false; };
+        player.onpause = () => { btn.innerHTML = '▶️ Lanjutkan'; btn.disabled = false; };
+        player.onended = () => { btn.innerHTML = '▶️ Putar Ulang'; };
+        player.onerror = () => { btn.innerHTML = '⚠️ Audio Error'; btn.disabled = true; };
 
     } else {
         btn.style.display = 'none';
@@ -221,15 +161,16 @@ function setupAudioPlayer(urlRaw) {
 
 function toggleAudio() {
     const player = document.getElementById('audioPlayer');
-    
-    // Kita hanya memberi perintah, urusan UI diurus oleh Event Listener di atas
+    if (!player) return;
+
     if (player.paused) {
-        // Coba play. Catch error jika browser memblokir (jarang terjadi di klik manual)
-        player.play().catch(e => console.warn("Auto-play blocked:", e));
+        player.play().catch(e => console.warn("Playback blocked:", e));
     } else {
         player.pause();
     }
 }
+
+/* ================= KALENDER LOGIC ================= */
 function showCalendarView() {
     document.getElementById('renungan').classList.add('hidden');
     document.getElementById('emptyState').classList.add('hidden');
@@ -254,6 +195,7 @@ function changeMonth(delta) {
 
 function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
+    if (!grid) return;
     grid.innerHTML = ''; 
 
     const year = currentCalendarDate.getFullYear();
@@ -283,20 +225,14 @@ function renderCalendar() {
 
         if (dateCheck > today) {
             cell.classList.add('locked');
-            cell.title = "Belum tersedia";
-            cell.onclick = () => alert("Renungan untuk tanggal ini belum dibuka.");
+            cell.onclick = () => alert("Renungan belum dibuka.");
         } else {
             const dataRenungan = allRenungan.find(r => r.key === dateKey);
             if (dataRenungan) {
                 cell.classList.add('available', 'has-renungan');
-                const tooltip = document.createElement('span');
-                tooltip.className = 'tooltip-text';
-                tooltip.innerText = dataRenungan.judul;
-                cell.appendChild(tooltip);
                 cell.onclick = () => renderRenungan(dataRenungan);
             } else {
                 cell.style.opacity = '0.5';
-                cell.title = "Tidak ada renungan";
             }
         }
         grid.appendChild(cell);
