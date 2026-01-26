@@ -169,7 +169,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 
 /* ======================
-   7. KALENDER UI (Sama seperti sebelumnya)
+   7. KALENDER UI 
 ====================== */
 .calendar-header {
   display: flex; justify-content: space-between; align-items: center;
@@ -205,6 +205,40 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .date-cell.available:hover { background-color: var(--primary); color: white; transform: scale(1.1); z-index: 2; }
 .date-cell.today { border: 2px solid var(--highlight); font-weight: bold; }
 .date-cell.locked { background-color: #eee; color: #bbb; cursor: not-allowed; }
+
+/* --- PERBAIKAN TOMBOL TUTUP KALENDER --- */
+.calendar-footer {
+    display: flex;
+    justify-content: center; /* Membuat tombol ke tengah */
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee; /* Garis tipis pemisah */
+}
+
+.btn-close-calendar {
+    /* Mengambil style dari .btn-elegant agar identik */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 50px; /* Bentuk kapsul */
+    transition: all 0.3s ease;
+    min-width: 145px;
+    height: 42px; /* Menyesuaikan tinggi agar presisi */
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    font-family: inherit;
+}
+
+.btn-close-calendar:hover {
+    background: #f0fdf4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
 
 /* ======================
    8. FOOTER
