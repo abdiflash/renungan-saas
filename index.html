@@ -109,25 +109,9 @@
   </div>
 </footer>
 
-<script src="assets/js/config.js?v=1.1"></script>
-<script src="assets/js/app.js?v=1"></script>
+<script src="assets/js/config.js?v=1.2"></script>
+<script src="assets/js/app.js?v=2"></script>
 
-<script>
-  // Fungsi dipanggil setelah data renungan muncul di app.js
-  function loadHitCounter() {
-    const namespace = "edueasy-athalia"; // Nama unik klien
-    const key = "daily-renungan";
-    
-    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-      .then(res => res.json())
-      .then(res => {
-        document.getElementById('count').innerText = res.value;
-      })
-      .catch(() => {
-        document.getElementById('count').innerText = "banyak"; 
-      });
-  }
-</script>
 
 </body>
 </html>
