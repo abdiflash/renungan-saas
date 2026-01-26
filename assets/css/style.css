@@ -2,13 +2,10 @@
    1. VARIABLES & RESET
 ====================== */
 :root {
-  /* Palet Warna Sekolah */
-  --primary: #2f6f4e;       /* Hijau Sekolah Utama */
-  --primary-dark: #1e4d37;  /* Hijau Gelap untuk Hover */
-  --accent: #d4edda;        /* Hijau Muda Lembut */
-  --highlight: #e67e22;     /* Oranye untuk penekanan/ayat */
-  
-  /* Background & Text */
+  --primary: #2f6f4e;       
+  --primary-dark: #1e4d37;  
+  --accent: #d4edda;        
+  --highlight: #e67e22;     
   --bg-body: #f4f7f6;
   --text-main: #2c3e50;
   --text-muted: #636e72;
@@ -27,7 +24,7 @@ body {
 }
 
 h1, h2, h3 { margin-top: 0; font-weight: 700; }
-button { font-family: inherit; cursor: pointer; }
+button { font-family: inherit; cursor: pointer; border: none; }
 
 /* ======================
    2. HEADER
@@ -35,7 +32,7 @@ button { font-family: inherit; cursor: pointer; }
 .app-header {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 1rem 3rem 1rem; /* Padding bawah ditambah untuk overlap container */
   text-align: center;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -45,25 +42,19 @@ button { font-family: inherit; cursor: pointer; }
 .app-header h1 { font-size: 1.6rem; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
 .app-header p { margin: 0; font-size: 0.95rem; opacity: 0.9; }
 
-/* PERBAIKAN: Bagian .editable-year DIHAPUS karena fitur klik sudah ditiadakan */
-#academicYear {
-  font-weight: 700;
-  /* Tidak perlu pointer atau border-bottom agar user tidak bingung */
-}
-
 /* ======================
    3. LAYOUT CONTAINER
 ====================== */
 .container {
   max-width: 720px;
-  margin: -20px auto 40px auto; 
+  margin: -40px auto 40px auto; 
   padding: 0 15px;
   position: relative;
   z-index: 10;
 }
 
 /* ======================
-   4. RENUNGAN CARD
+   4. RENUNGAN CARD & UI TOP BUTTONS
 ====================== */
 #renungan, #calendar, #emptyState {
   background: white;
@@ -76,14 +67,60 @@ button { font-family: inherit; cursor: pointer; }
 
 #renungan header {
   border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
   margin-bottom: 20px;
   text-align: center;
 }
 
-#renungan h2 { color: var(--primary); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-#renungan time { display: block; color: var(--text-muted); font-size: 0.9rem; }
+#renungan h2 { color: var(--primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+#renungan time { display: block; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
 
+/* AREA TOMBOL ATAS (Kalender & Audio) */
+.action-area-top {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* Base Button Elegant Style */
+.btn-elegant {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    min-width: 145px;
+    border: 2px solid var(--primary);
+}
+
+.calendar-btn-top {
+    background: white;
+    color: var(--primary);
+}
+
+.calendar-btn-top:hover {
+    background: var(--accent);
+}
+
+.audio-btn-top {
+    background: var(--primary);
+    color: white;
+}
+
+.audio-btn-top:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 4px 10px rgba(47, 111, 78, 0.3);
+}
+
+/* ======================
+   5. CONTENT AREA
+====================== */
 #displayJudul {
   font-size: 1.5rem;
   color: #222;
@@ -115,43 +152,24 @@ button { font-family: inherit; cursor: pointer; }
 .refleksi-content { margin: 0; font-style: italic; color: #5d4037; }
 
 /* ======================
-   5. AUDIO PLAYER
+   6. STATS & HIT COUNTER
 ====================== */
-.audio-wrapper {
-  margin-top: 25px;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  border: 1px solid #eee;
+.reader-stats {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #ddd;
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
-#audioControl {
-  background: var(--primary);
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 50px; 
-  font-weight: 600;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 6px rgba(47, 111, 78, 0.2);
+#count {
+    color: var(--primary-dark);
+    font-weight: 800;
 }
-
-#audioControl:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(47, 111, 78, 0.3);
-}
-
-#audioControl:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
-audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 
 /* ======================
-   6. KALENDER UI
+   7. KALENDER UI (Sama seperti sebelumnya)
 ====================== */
 .calendar-header {
   display: flex; justify-content: space-between; align-items: center;
@@ -168,10 +186,8 @@ audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 .nav-btn:hover { background: var(--primary); color: white; }
 
 .calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 20px;
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 8px; margin-bottom: 20px;
 }
 
 .day-name {
@@ -180,130 +196,36 @@ audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 }
 
 .date-cell {
-  aspect-ratio: 1 / 1; 
-  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;
   border-radius: 8px; font-weight: 500; font-size: 0.95rem;
   position: relative; transition: all 0.2s ease;
 }
 
-.date-cell.available {
-  background-color: var(--accent);
-  color: var(--primary-dark);
-  cursor: pointer;
-}
-.date-cell.available:hover {
-  background-color: var(--primary);
-  color: white;
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 2;
-}
-
-.date-cell.today {
-  border: 2px solid var(--highlight);
-  font-weight: bold;
-}
-
-.date-cell.locked {
-  background-color: #eee;
-  color: #bbb;
-  cursor: not-allowed;
-}
-.date-cell.locked::after {
-  content: "🔒"; font-size: 0.7rem;
-  position: absolute; top: 2px; right: 2px; opacity: 0.5;
-}
-
-.date-cell.has-renungan::before {
-  content: ""; width: 6px; height: 6px;
-  background-color: var(--highlight);
-  border-radius: 50%; position: absolute;
-  bottom: 4px; left: 50%; transform: translateX(-50%);
-}
-
-.date-cell.empty { background: transparent; cursor: default; }
-
-.tooltip-text {
-  visibility: hidden; background-color: #333; color: #fff;
-  text-align: center; padding: 6px 10px; border-radius: 6px;
-  position: absolute; z-index: 10; bottom: 120%; left: 50%;
-  transform: translateX(-50%); width: max-content; max-width: 150px;
-  font-size: 0.75rem; opacity: 0; transition: opacity 0.3s;
-  pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.tooltip-text::after {
-  content: ""; position: absolute; top: 100%; left: 50%;
-  margin-left: -5px; border-width: 5px; border-style: solid;
-  border-color: #333 transparent transparent transparent;
-}
-.date-cell:hover .tooltip-text { visibility: visible; opacity: 1; }
+.date-cell.available { background-color: var(--accent); color: var(--primary-dark); cursor: pointer; }
+.date-cell.available:hover { background-color: var(--primary); color: white; transform: scale(1.1); z-index: 2; }
+.date-cell.today { border: 2px solid var(--highlight); font-weight: bold; }
+.date-cell.locked { background-color: #eee; color: #bbb; cursor: not-allowed; }
 
 /* ======================
-   7. BUTTONS & FOOTER
+   8. FOOTER
 ====================== */
-.action-area { text-align: center; margin-top: 20px; }
-
-.calendar-btn {
-  background: white;
-  color: var(--primary);
-  border: 2px solid var(--primary);
-  padding: 10px 25px;
-  border-radius: 50px;
-  font-weight: 600;
-  transition: 0.2s;
-  display: inline-block;
-}
-
-.calendar-btn:hover {
-  background: var(--primary);
-  color: white;
-}
-
-.close-btn {
-  border-color: #e74c3c; color: #e74c3c;
-}
-.close-btn:hover { background: #e74c3c; color: white; border-color: #e74c3c; }
-
 .app-footer {
-  /* Menghapus background dan border-radius */
   background: transparent;
   color: var(--text-muted);
   text-align: center;
-  padding: 3rem 1rem; /* Memberi ruang napas yang cukup di bawah */
+  padding: 2rem 1rem 4rem 1rem;
   margin-top: 20px;
-  border-top: 1px solid #eee; /* Garis tipis transparan sebagai pemisah halus */
-}
-
-.footer-content p {
-  margin: 8px 0;
-  font-size: 0.95rem; /* Sedikit lebih besar dari sebelumnya */
-}
-
-.footer-content strong {
-  color: var(--primary); /* Menonjolkan nama sekolah dengan warna tema */
+  border-top: 1px solid #eee;
 }
 
 .footer-link {
   color: var(--primary);
   text-decoration: none;
-  font-size: 1.1rem; /* Ukuran font lebih besar agar mudah dibaca/diklik */
+  font-size: 1.1rem;
   font-weight: 600;
-  transition: color 0.2s;
-  display: inline-block;
-  margin-top: 5px;
-}
-
-.footer-link:hover {
-  color: var(--highlight); /* Berubah warna saat hover untuk interaksi */
-  text-decoration: underline;
 }
 
 .loading { padding: 50px; text-align: center; color: var(--text-muted); }
-
-/* ======================
-   8. UTILITIES & ANIMATION
-====================== */
 .hidden { display: none !important; }
 
 @keyframes slideUpFade {
@@ -313,8 +235,7 @@ audio { width: 100%; margin-top: 15px; height: 40px; border-radius: 4px; }
 
 /* Mobile Tweak */
 @media (max-width: 480px) {
-  .calendar-grid { gap: 4px; }
-  .date-cell { font-size: 0.8rem; border-radius: 6px; }
+  .btn-elegant { min-width: 130px; padding: 8px 12px; font-size: 0.8rem; }
+  .action-area-top { gap: 8px; }
   #displayJudul { font-size: 1.3rem; }
-  .container { padding: 0 10px; }
 }
