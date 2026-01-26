@@ -76,15 +76,26 @@ button { font-family: inherit; cursor: pointer; border: none; }
 #renungan time { display: block; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
 
 /* AREA TOMBOL ATAS (Kalender & Audio) */
-.action-area-top {
+/* CONTAINER UTAMA */
+.audio-container {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column; /* Mengatur susunan tombol di atas, slider di bawah */
+    align-items: center;    /* Mengetengahkan semua elemen */
+    gap: 15px;
     margin-top: 10px;
+    width: 100%;
 }
 
-/* Base Button Elegant Style */
+/* AREA TOMBOL (Kalender & Audio) */
+.action-area-top {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap; /* Supaya rapi di layar HP yang sangat kecil */
+    width: 100%;
+}
+
+/* Base Button Elegant Style (Tetap seperti milik Anda) */
 .btn-elegant {
     display: inline-flex;
     align-items: center;
@@ -95,61 +106,29 @@ button { font-family: inherit; cursor: pointer; border: none; }
     font-weight: 600;
     border-radius: 50px;
     transition: all 0.3s ease;
-    min-width: 145px;
+    min-width: 150px; /* Sedikit dilebarkan agar teks tidak sesak */
     border: 2px solid var(--primary);
+    cursor: pointer;
 }
 
-.calendar-btn-top {
-    background: white;
-    color: var(--primary);
-}
-
-.calendar-btn-top:hover {
-    background: var(--accent);
-}
-
-.audio-btn-top {
-    background: var(--primary);
-    color: white;
-}
-
-.audio-btn-top:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 4px 10px rgba(47, 111, 78, 0.3);
-}
-
-/* Slider audio - Tambahkan di style.css */
-
-.audio-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px; /* Jarak antara tombol dan slider */
-    margin-top: 10px;
-}
-
+/* SLIDER AUDIO */
 .audio-slider {
     width: 100%;
-    max-width: 300px; /* Supaya tidak melebar memenuhi layar */
-    margin: 15px auto; /* Memberi jarak dari tombol dan ke tengah */
-    display: block;    /* Agar margin auto bekerja */
-    border-radius: 8px;
-    height: 35px;
-}
-
-/* Tweak agar slider seragam dengan tema hijau */
-.audio-slider::-webkit-media-controls-enclosure {
+    max-width: 320px;      /* Ukuran ideal agar seimbang dengan dua tombol di atasnya */
+    height: 40px;
+    display: block;        /* Memastikan slider mengambil baris sendiri */
+    margin: 5px auto;      /* Otomatis di tengah */
+    border-radius: 50px;   /* Membuat slider berbentuk kapsul */
     background-color: var(--accent);
+    outline: none;
+    /* Efek warna hijau pada kontrol browser */
+    filter: sepia(20%) saturate(70%) hue-rotate(90deg);
 }
 
-/* Pastikan slider audio terlihat modern */
+/* Tambahan agar slider tidak pernah muncul di samping tombol */
 #audioPlayer {
-    width: 100%;
-    max-width: 320px; /* Batasi lebar agar rapi di desktop */
-    margin: 15px auto 0 auto;
-    display: block;
-    height: 35px; /* Ketinggian standar agar kontrol pas */
-    filter: sepia(20%) saturate(70%) hue-rotate(90deg); /* Opsional: sedikit nuansa hijau */
+    clear: both; 
+    display: none; /* Akan diubah jadi 'block' oleh JavaScript saat audio ada */
 }
 
 
