@@ -3,20 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Renungan - Edueasy</title>
-    
+    <title>Renungan Harian - Edueasy</title>
     <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
 
-    <div id="app">
-        <h1 id="school-name">Memuat...</h1>
-        <div id="content"></div>
-        <audio id="audio-player" controls></audio>
-    </div>
+<header class="app-header">
+    <h1 id="school-name">Renungan Harian</h1>
+    <p>Tahun Ajaran: <strong id="academicYear">Memuat...</strong></p>
+</header>
 
-    <script src="config.js?v=1.1"></script>
-    <script src="../assets/app.js?v=1"></script>
+<main class="container">
+    <div id="loader" class="loading">⏳ Sedang mengambil data...</div>
+
+    <section id="renungan" class="hidden">
+        <time id="displayDate"></time>
+        <article>
+            <h3 id="displayJudul"></h3>
+            <div class="ayat-box">
+                <span id="displayAyat" class="ayat-ref"></span>
+                <blockquote id="displayAyatText" class="ayat-text"></blockquote>
+            </div>
+            <div id="displayIsi"></div>
+        </article>
+        
+        <audio id="audioPlayer" controls>
+            <source id="audioSource" src="" type="audio/mpeg">
+        </audio>
+    </section>
+
+    <section id="emptyState" class="hidden">
+        <h3>Belum ada renungan untuk hari ini.</h3>
+    </section>
+</main>
+
+<footer class="app-footer">
+    <p>&copy; 2026 <strong id="footerSchoolName">Sekolah</strong></p>
+    <p><a href="#" id="footerSchoolLink" target="_blank">Visit Website</a></p>
+</footer>
+
+<script src="config.js?v=1.1"></script>
+<script src="../assets/app.js?v=1"></script>
 
 </body>
 </html>
