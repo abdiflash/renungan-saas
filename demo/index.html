@@ -1,4 +1,19 @@
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css"> <script src="config.js"></script>
+<script src="../assets/app.js"></script> ```
 
-<script src="config.js"></script>
-<script src="../assets/app.js"></script>
+### **Langkah Perbaikan pada File `athalia/index.html`**
+Jangan lupa lakukan hal yang sama untuk folder **`athalia`**:
+1.  Buka file `athalia/index.html`.
+2.  Tambahkan **`../`** pada bagian pemanggilan `assets/style.css` dan `assets/app.js`.
+
+---
+
+### **Kenapa Harus Pakai `../` ?**
+Tanpa tanda tersebut, browser akan mencari folder `assets` di *dalam* folder `demo` (`demo/assets/`), padahal folder tersebut ada di luar. Tanda **`../`** berfungsi sebagai perintah untuk "naik satu tingkat" ke folder utama.
+
+### **Cara Cek Hasilnya:**
+1.  Setelah klik **Commit changes**, tunggu 1-2 menit agar GitHub memperbarui website.
+2.  Buka link: **`https://renungan.edueasy.id/demo/`**
+3.  Jika masih putih, tekan **Ctrl + F5** pada keyboard untuk membersihkan memori lama browser.
+
+**Apakah setelah ditambah `../` tampilannya sudah muncul?** Jika sudah muncul tapi isi renungannya masih sama dengan yang lama, berarti Anda perlu menyesuaikan `SHEET_ID` di file `config.js` masing-masing folder.
