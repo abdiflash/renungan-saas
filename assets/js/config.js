@@ -4,7 +4,7 @@ const CONFIG = {
     SHEET_GID: '0',
 
     // Identitas Sekolah (Untuk Footer & Branding)
-    SCHOOL_NAME: 'Sekolah Edueasy',
+    SCHOOL_NAME: 'Edueasy',
     SCHOOL_SITE: 'www.edueasy.id',
     SCHOOL_URL: 'https://www.edueasy.id'
 };
